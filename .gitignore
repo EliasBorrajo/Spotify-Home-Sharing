@@ -1,0 +1,41 @@
+# Default ignored files
+/shelf/
+/.idea/workspace.xml
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../../../../:\Users\garam\Desktop\Documents\HES-SO\HEG\Java\.idea/dataSources/
+/dataSources.local.xml
+/dataSources/
+
+# Editor-based HTTP Client requests
+/httpRequests/
+
+# IGNORES QUE JE METS PARTOUT, mais pourquoi ?
+.idea
+/.idea/
+*.class
+*.iml
+out/
+target/
+/target
+
+
+#https://gary-rowe.com/2012-10-12-a-gitignore-file-for-intellij-and-eclipse-with-maven/
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+
