@@ -8,9 +8,204 @@
     <artifactId>Spotify</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- Paramètres de mon projet,
+    ce sont des configurations globales, afin de ne pas avoir à les donner à chaque plugin -->
     <properties>
+        <java.version>17</java.version>
+
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+
+        <maven.assembly.plugin.version>3.3.0</maven.assembly.plugin.version>
+        <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
+        <maven.javadoc.plugin>3.3.0</maven.javadoc.plugin>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reportimg.outputEncoding>UTF-8</project.reportimg.outputEncoding>
     </properties>
+
+    <!-- SNAPSHOT -->
+    <repositories>
+        <repository>
+            <id>project-repository</id>
+            <name>Main project repository</name>
+            <url>${project.baseUri}</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!-- Plugins : Permettent de RUN le cycle de vie du projet maven. Chaque Plugin a un GOAL (BUT) lié à sa phase -->
+    <build>
+        <plugins>
+            <!-- COMPILATEUR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <!-- ASSEMBLEUR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.assembly.plugin.version}</version>
+                <executions>
+                    <!-- USERS BUILD -->
+                    <execution>
+                        <id>build-spotify_User</id>
+                        <configuration>
+                            <!-- Donner le NOM du PROJET -->
+                            <finalName>${project.name}_USER__</finalName>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <addClasspath>true</addClasspath>
+                                    <!-- Le chemin d'accès à notre MAIN -->
+                                    <mainClass>ch.hevs.User.UI.UInterface</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- SERVER BUILD -->
+                    <execution>
+                        <id>build-spotify_Server</id>
+                        <configuration>
+                            <!-- Donner le NOM du PROJET -->
+                            <finalName>${project.name}_SERVER__</finalName>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <addClasspath>true</addClasspath>
+                                    <!-- Le chemin d'accès à notre MAIN -->
+                                    <mainClass>ch.hevs.Scanner.server</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Permet de NE PAS générer le SNAPSHOT, qui lui est le JAR SANS les dependencies,
+            qui ne FONCTIONNERAIT donc PAS -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.jar.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-jar-without-dependencies</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- JAVADOC -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <additionalOptions>
+                        <additionalOption>-Xdoclint:none</additionalOption>
+                    </additionalOptions>                                          -->
+                    <!--<failOnError>false</failOnError>-->
+        <!--        </configuration>
+            </plugin>
+                          -->
+
+
+            <!-- UNIT TESTING -->
+            <plugin>
+                <groupId>org.apache.maven.surefire</groupId>
+                <artifactId>maven-surefire-common</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+
+            <!-- AUCUNE IDEE CE QUE C'EST @TODO-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+
+            <!-- DEPLOYMENT -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+
+            <!-- Deploiement sur HEROKU -->
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-deploy</artifactId>
+                <version>3.0.4</version>
+                <configuration>
+                    <appName>VSFy</appName>
+                    <processTypes>
+                        <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
+                    </processTypes>
+                </configuration>
+            </plugin>
+
+
+        </plugins>
+    </build>
+
+    <!-- Deploy at Repository -->
+    <!--<distributionManagement>
+        <repository>
+            <id>test-distribution</id>
+            <name>Distribution name</name>
+            <url>https://distrourl.com/</url>
+        </repository>
+    </distributionManagement>         -->
+
+
+    <!-- Bibliothèques du projet -->
+    <dependencies>
+        <!-- JUNIT -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+            <!--
+            SCOPES :
+                Provided  : Provided by JDK or RUNTIME, available at compile time but not at runtime
+                Runtime   : Available at runtime, but not compile time
+                Test      : Available while running and writing tests
+                System    : Path to the JAR should be provided manually using <systemPath>
+            -->
+        </dependency>
+
+    </dependencies>
 
 </project>
