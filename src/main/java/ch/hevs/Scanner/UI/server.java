@@ -1,4 +1,4 @@
-package ch.hevs.Scanner;
+package ch.hevs.Scanner.UI;
 
 public class server
 {

@@ -92,7 +92,7 @@
                                 <manifest>
                                     <addClasspath>true</addClasspath>
                                     <!-- Le chemin d'accès à notre MAIN -->
-                                    <mainClass>ch.hevs.Scanner.server</mainClass>
+                                    <mainClass>ch.hevs.Scanner.UI.server</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
