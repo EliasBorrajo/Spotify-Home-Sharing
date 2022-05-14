@@ -7,7 +7,7 @@
 /dataSources.local.xml
 /dataSources/
 
-# Editor-based HTTP Client requests
+# Editor-based HTTP ConnectionUser requests
 /httpRequests/
 
 # IGNORES QUE JE METS PARTOUT, mais pourquoi ?
