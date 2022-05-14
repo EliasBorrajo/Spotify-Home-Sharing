@@ -3,7 +3,7 @@ package ch.hevs.User.UI;
 /**
  * @author Elias
  */
-public class UInterface
+public class AppUser
 {
     public static void main(String[] args)
     {
