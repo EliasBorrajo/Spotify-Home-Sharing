@@ -1,15 +1,20 @@
+package ch.hevs.Scanner;
+
+import ch.hevs.User.Client;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.LinkedList;
 
-public class Server {
+public class Scanner {
 
     private static final int portDuServeur = 45000;
     private LinkedList <Client> listeConnectionUsers = new LinkedList <Client> ();
 
     public static void main(String[] args) throws IOException {
+
 
         try {
 
@@ -27,8 +32,9 @@ public class Server {
             System.out.println( "IP et Port : " + socket.getRemoteSocketAddress().toString() );
             System.out.println( "Port du serveur : " + socket.getLocalPort() );
 
-            Client cli = new Client(socket.getInetAddress(), socket.getPort());
-            System.out.println(cli.toString());
+            Client client1 = new Client(socket.getInetAddress(), socket.getPort());
+
+           client1.getListeDeMusiques();
 
             // Fermeture du serveur et de son socket d'accès
             server.close();
@@ -43,5 +49,6 @@ public class Server {
         {
             ioException.printStackTrace();
         }
+
     }
 }

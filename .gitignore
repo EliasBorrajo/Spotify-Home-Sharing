@@ -7,7 +7,7 @@
 /dataSources.local.xml
 /dataSources/
 
-# Editor-based HTTP ConnectionUser requests
+# Editor-based HTTP ch.hevs.User.ConnectionClient requests
 /httpRequests/
 
 # IGNORES QUE JE METS PARTOUT, mais pourquoi ?
