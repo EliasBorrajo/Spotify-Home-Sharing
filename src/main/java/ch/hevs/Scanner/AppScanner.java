@@ -21,6 +21,10 @@ public class AppScanner
 {
     public static void main(String[] args)
     {
+        // 1) Initialiser le Scanner en écoute
 
+        // 2) Se mettre en attente & écoute, pour avoir des clients qui
+
+        // 3)
     }
 }
