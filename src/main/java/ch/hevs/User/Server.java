@@ -18,7 +18,7 @@ public class Server implements Runnable
     public void run()
     {
         System.out.print(cc.YELLOW.getCOLOR());
-
+        System.out.println("Server is running");
 
         startApp();
 

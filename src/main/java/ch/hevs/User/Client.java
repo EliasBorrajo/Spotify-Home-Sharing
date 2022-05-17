@@ -14,8 +14,8 @@ import java.util.Scanner;
 public class Client implements Runnable
 {
     // A T T R I B U T S
-    private String ipClient;
-    private int portClient;
+    private String ipUser;
+    private int portUserServeur;
     private ArrayList<Musique> listeDeMusiques;
     private boolean isConnected;
 
@@ -171,7 +171,7 @@ public class Client implements Runnable
             isConnected = true;
 
             System.out.println("Mon adresse IP est : " + InetAddress.getLocalHost().getHostAddress());
-            ipClient = InetAddress.getLocalHost().getHostAddress();
+            ipUser = InetAddress.getLocalHost().getHostAddress();
 
         }
         catch (IOException e)

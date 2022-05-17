@@ -3,6 +3,8 @@ package ch.hevs.Scanner;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Client;
+import ch.hevs.User.Server;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,7 +31,7 @@ import java.util.Scanner;
 public class AppScanner
 {
     private static final int PORT_DU_SERVEUR = 45000;
-    private static LinkedList <Client> connectedUsers; // Liste des clients connectés
+    private static LinkedList <Server> connectedUsers; // Liste des clients connectés
     private static boolean isRunning;
     private static ConsoleColors cc = ConsoleColors.PUPLE;;
 
@@ -69,17 +71,19 @@ public class AppScanner
             //2) Se mettre en attente & écoute, pour avoir des clients
             while(isRunning)
             {
+
+
                 scanSubnet();
 
                 //updateContentList(); //TODO : le serveur GET de tous ses users connectés les fichiers, toute les X secondes ? Thread ?
 
-                Scanner scan = new Scanner(System.in);
+
+                /*Scanner scan = new Scanner(System.in);
                 if(scan.nextLine().equals("stop")) // TODO : FOnctionne 1 fois sur 2
                 {
                     isRunning = false;
                     System.out.println("Scanner stopped");
-                }
-
+                }*/
             }
 
             // Fermeture du serveur et de son socket d'accès
@@ -105,7 +109,7 @@ public class AppScanner
         Config.getConfig();
 
         isRunning = true;
-        connectedUsers = new LinkedList<Client>();
+        connectedUsers = new LinkedList<Server>();
 
         // Création d'un serveur qui écoute sur le port 45000
         server = new ServerSocket(PORT_DU_SERVEUR);
