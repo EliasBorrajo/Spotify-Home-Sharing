@@ -46,11 +46,13 @@ public class AppScanner
 
         // 3) Quand un client se connecte, l'enregistrer dans une linked list, avec son IP et son contenu
 
-        // 4) Quand un client se déconnecte, l'enlever de la liste
-
-        // 5) Quand un client rajoute un fichier, mettre à jour la liste des fichiers du client concerné
+        // 4) Quand un client rajoute un fichier, mettre à jour la liste des fichiers du client concerné
             // Le user server fait un refresh de son contenu, qui va update le contenu sur scanner.
             // Le user client cherche es fichiers, demandera un refresh au scanner pour avoir les derniers updates.
+
+        // 5) Quand un client se déconnecte, l'enlever de la liste
+
+
         System.out.print(cc.getCOLOR());
         System.out.println("Scanner started");
         try
@@ -98,8 +100,17 @@ public class AppScanner
         System.out.println( "Port du serveur : " + socket.getLocalPort() );
 
         //Client client1 = new Client(socket.getInetAddress(), socket.getPort());
-
         //client1.getListeDeMusiques();
+
+        // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
+
+
+        // 3) Get le client serialisé et l'ajouter à la liste des clients connectés
+
+        // 4) Quand un client rajoute un fichier, mettre à jour la liste des fichiers du client concerné
+            // Le user server fait un refresh de son contenu, qui va update le contenu sur scanner.
+            // Le user client cherche es fichiers, demandera un refresh au scanner pour avoir les derniers updates.
+
 
     }
 

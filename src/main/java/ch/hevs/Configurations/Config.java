@@ -2,6 +2,7 @@ package ch.hevs.Configurations;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -36,8 +37,8 @@ public class Config
 
     private String configFilePath;
     private String storePath;                       // Is the value contained in the environment variable. We return it to the getters.
-    private String storePathUpload;
-    private String storePathDownload;
+    private Path pathUpload;
+    private Path pathDownload;
     private static final String VARIABLE_ENVIRONNEMENT = "VSSPOTIFY"; // Name of the Variable on the PC
 
 
@@ -78,7 +79,8 @@ public class Config
         }
 
         // 2) CREER LE DOSSIER DE DOWNLOAD DE L'UTILISATEUR
-        downloadFolder = new File(String.valueOf(  Paths.get(storePath , "download")  ));  // Créer le chemin du dossier de download
+        pathDownload = Paths.get(storePath , "download");
+        downloadFolder = new File(String.valueOf(  pathDownload  ));  // Créer le chemin du dossier de download
         if (!downloadFolder.isDirectory())
         {
             // Did the creation of the folder work?
@@ -90,7 +92,8 @@ public class Config
         }
 
         // 3) CREER LE DOSSIER DE UPLOAD DE L'UTILISATEUR
-        uploadFolder = new File(String.valueOf(  Paths.get(storePath , "upload")  ));  // Créer le chemin du dossier de upload
+        pathUpload = Paths.get(storePath , "upload");
+        uploadFolder = new File(String.valueOf(  pathUpload  ));  // Créer le chemin du dossier de upload
         if (!uploadFolder.isDirectory())
         {
             // Did the creation of the folder work?
@@ -132,6 +135,16 @@ public class Config
     public String getStorePath()
     {
         return storePath;
+    }
+
+    public Path getPathUpload()
+    {
+        return pathUpload;
+    }
+
+    public Path getPathDownload()
+    {
+        return pathDownload;
     }
 }
 

@@ -2,8 +2,6 @@ package ch.hevs.User;
 
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
-import ch.hevs.User.Client;
-import ch.hevs.User.Server;
 
 /**
  * Cette classe permet de lancer l'application. Elle permet de lancer le serveur et le client, pour un seul utilisateur.
@@ -12,10 +10,12 @@ import ch.hevs.User.Server;
  */
 public class AppUser
 {
+    private static boolean isRunningApp;
+
     public static void main(String[] args)
     {
         // User aura 2 threads, un thread pour le client, l'autre pour le serveur
-        Client client = new Client();
+        Client client = new Client(isRunningApp);
         Server server = new Server();
 
         Thread clientThread = new Thread(client);
@@ -34,6 +34,26 @@ public class AppUser
         clientThread.start();
 
         Config.getConfig();
+
+/*
+        isRunningApp = true;
+
+        while (isRunningApp)
+        {
+
+        }
+
+        // On attend que les threads soient terminés pour fermer le programme
+        System.out.println("Waiting for threads to finish");
+        System.out.println("Closing server thread");
+        System.out.println("Closing client thread");
+        serverThread.interrupt();
+        clientThread.interrupt();
+
+        System.out.println("Closing application");
+        System.exit(0);
+
+*/
 
     }
 }

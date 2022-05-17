@@ -2,14 +2,26 @@ package ch.hevs.User;
 
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Client implements Runnable
 {
     // A T T R I B U T S
+    private InetAddress ip;
+    private int port;
+    private ArrayList<Musique> listeDeMusiques = new ArrayList <Musique> ();
+
+
     private ConsoleColors cc = ConsoleColors.GREEN;
+    private boolean isRunningApp;
 
     // C O N S T R U C T E U R
+    public Client(boolean isRunningApp)
+    {
+        this.isRunningApp = isRunningApp;
+    }
 
     // R U N N A B L E
     @Override
@@ -53,6 +65,8 @@ public class Client implements Runnable
             case 1:
                 // 1.1) l'application console affiche le menu
                 System.out.println("CHOIX 1 MAN !");
+                isRunningApp = false;
+
                 break;
             case 2:
                 break;
