@@ -69,7 +69,7 @@
                                 <manifest>
                                     <addClasspath>true</addClasspath>
                                     <!-- Le chemin d'accès à notre MAIN -->
-                                    <mainClass>ch.hevs.User.UI.AppUser</mainClass>
+                                    <mainClass>ch.hevs.User.AppUser</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>

@@ -1,5 +1,6 @@
-package ch.hevs.User.UI;
+package ch.hevs.User;
 
+import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Client;
 import ch.hevs.User.Server;
@@ -32,6 +33,7 @@ public class AppUser
         serverThread.start();
         clientThread.start();
 
+        Config.getConfig();
 
     }
 }

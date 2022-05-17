@@ -29,5 +29,6 @@ public class Server implements Runnable
     private void startApp()
     {
         // 1) Aller lire les fichiers dans le répertoire, et créer une liste des fichiers à envoyer au Scanner
+        // 2)
     }
 }
