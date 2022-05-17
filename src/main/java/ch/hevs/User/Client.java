@@ -74,8 +74,8 @@ public class Client implements Runnable
             int portServer = 45000;
             System.out.println();
 
-            try {
-
+            try
+            {
                 connectToScanner(ipServer, portServer);
             }
             catch (Exception e)
@@ -92,9 +92,7 @@ public class Client implements Runnable
 
         boolean isRunning = true;
         int userChoice;
-
         Scanner scan = new Scanner(System.in);
-
 
         do
         {
@@ -121,8 +119,13 @@ public class Client implements Runnable
 
                 case 2:
                     System.out.println("SELECTED : Option 2 - Update my music list :");
-                    getListeDeMusiques();
+                    getUpdatedListeDeMusiques();
                     printListeDeMusiques();
+                    // serialiser liste ?
+                    break;
+
+                case 3:
+                    System.out.println("SELECTED : Option 3 - Logout :");
                     break;
 
                 default:
@@ -143,7 +146,7 @@ public class Client implements Runnable
 
         }while (isRunning == true);
 
-
+        System.out.println("Goodbye !");
 
     }
 
@@ -170,10 +173,6 @@ public class Client implements Runnable
             System.out.println("Mon adresse IP est : " + InetAddress.getLocalHost().getHostAddress());
             ipClient = InetAddress.getLocalHost().getHostAddress();
 
-
-            // Chopper la liste de musiques dispos des autres clients sur le serveur
-
-            // Dans le cas ou il est impossible de se connecter au serveur
         }
         catch (IOException e)
         {
@@ -189,7 +188,7 @@ public class Client implements Runnable
      * et va mettre à jour ma liste de musique à distribuer.
      * @return : Retourne ma liste de musiques que je mets à disposition.
      */
-    public ArrayList<Musique> getListeDeMusiques()
+    public ArrayList<Musique> getUpdatedListeDeMusiques()
     {
         // 1) Entrer dans répertoire upload
         // 2) Chequer tous les fichiers .wav / .mp3
