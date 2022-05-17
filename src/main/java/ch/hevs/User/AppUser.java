@@ -3,6 +3,9 @@ package ch.hevs.User;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 /**
  * Cette classe permet de lancer l'application. Elle permet de lancer le serveur et le client, pour un seul utilisateur.
  *
@@ -12,10 +15,18 @@ public class AppUser
 {
     private static boolean isRunningApp;
 
+    /**
+     * Lance l'application.
+     * Va lancer le serveur et le client, chacun dans un thread.
+     * @param args
+     */
     public static void main(String[] args)
     {
+        // Configuration des dossiers du USER
+        Config.getConfig();
+
         // User aura 2 threads, un thread pour le client, l'autre pour le serveur
-        Client client = new Client(isRunningApp);
+        Client client = new Client();
         Server server = new Server();
 
         Thread clientThread = new Thread(client);
@@ -33,7 +44,7 @@ public class AppUser
         serverThread.start();
         clientThread.start();
 
-        Config.getConfig();
+
 
 /*
         isRunningApp = true;

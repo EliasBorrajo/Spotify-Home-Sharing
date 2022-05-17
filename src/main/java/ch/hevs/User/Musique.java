@@ -4,23 +4,34 @@ package ch.hevs.User;
 public class Musique
 {
 
-    private String fileName;
-    private long fileSize;
+    private String musicFileName;
+    private long musicFileSize;
+
+
+
+    public Musique(String fileName, long fileSize)
+    {
+        this.musicFileName = fileName;
+        this.musicFileSize = fileSize;
+    }
 
     @Override
     public String toString()
     {
         return "Musique{" +
-                "fileName='" + fileName + '\'' +
-                ", fileSize=" + fileSize +
+                "fileName='" + musicFileName + '\'' +
+                ", fileSize=" + musicFileSize +
                 '}';
     }
 
-    public Musique(String fileName, long fileSize)
+    public String getMusicFileName()
     {
-        this.fileName = fileName;
-        this.fileSize = fileSize;
+        return musicFileName;
     }
 
+    public long getMusicFileSize()
+    {
+        return musicFileSize;
+    }
 }
 

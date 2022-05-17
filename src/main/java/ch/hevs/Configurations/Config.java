@@ -36,7 +36,7 @@ public class Config
     private File downloadFolder;
 
     private String configFilePath;
-    private String storePath;                       // Is the value contained in the environment variable. We return it to the getters.
+    private String envVarStorePath;                       // Is the value contained in the environment variable. We return it to the getters.
     private Path pathUpload;
     private Path pathDownload;
     private static final String VARIABLE_ENVIRONNEMENT = "VSSPOTIFY"; // Name of the Variable on the PC
@@ -48,10 +48,10 @@ public class Config
     private Config()
     {
         // Retrieve the contents of the environment variable on the PC.
-        storePath = System.getenv(VARIABLE_ENVIRONNEMENT);
+        envVarStorePath = System.getenv(VARIABLE_ENVIRONNEMENT);
 
         // Vérification de l'existence de la variable d'environnement
-        if (storePath == null)
+        if (envVarStorePath == null)
         {
             System.err.println("No environment variable was found!");
             JOptionPane.showMessageDialog(null, "No environment variable was found!" +
@@ -64,7 +64,7 @@ public class Config
         // 1) CREER LE DOSSIER PRINCIPAL DE STOCKAGE DE L'UTILISATEUR
         // When creating the file for the first time, store it in this location.
         // This file will be a folder containing our data (such as JSON) created by the project.
-        storeFolder = new File(storePath);
+        storeFolder = new File(envVarStorePath);
 
         // Test to know if the File that we created is a folder or not.
         // If the folder where we are going to store the JSON does not exist, we will create it.
@@ -79,7 +79,7 @@ public class Config
         }
 
         // 2) CREER LE DOSSIER DE DOWNLOAD DE L'UTILISATEUR
-        pathDownload = Paths.get(storePath , "download");
+        pathDownload = Paths.get(envVarStorePath, "download");
         downloadFolder = new File(String.valueOf(  pathDownload  ));  // Créer le chemin du dossier de download
         if (!downloadFolder.isDirectory())
         {
@@ -92,7 +92,7 @@ public class Config
         }
 
         // 3) CREER LE DOSSIER DE UPLOAD DE L'UTILISATEUR
-        pathUpload = Paths.get(storePath , "upload");
+        pathUpload = Paths.get(envVarStorePath, "upload");
         uploadFolder = new File(String.valueOf(  pathUpload  ));  // Créer le chemin du dossier de upload
         if (!uploadFolder.isDirectory())
         {
@@ -132,9 +132,9 @@ public class Config
     //*****************************************************************************
     // G E T T E R S / S E T T E R S
     //*****************************************************************************
-    public String getStorePath()
+    public String getEnvVarStorePath()
     {
-        return storePath;
+        return envVarStorePath;
     }
 
     public Path getPathUpload()

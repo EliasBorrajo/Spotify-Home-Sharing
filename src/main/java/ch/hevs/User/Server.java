@@ -8,6 +8,10 @@ public class Server implements Runnable
     private ConsoleColors cc = ConsoleColors.YELLOW;
 
     // C O N S T R U C T E U R
+    public Server()
+    {
+        // TODO
+    }
 
     // R U N N A B L E
     @Override
@@ -15,17 +19,12 @@ public class Server implements Runnable
     {
         System.out.print(cc.YELLOW.getCOLOR());
         System.out.println("Server is running");
-        init();
+
         startApp();
 
     }
 
     // M E T H O D E S
-    private void init()
-    {
-
-    }
-
     private void startApp()
     {
         // 1) Aller lire les fichiers dans le répertoire, et créer une liste des fichiers à envoyer au Scanner
