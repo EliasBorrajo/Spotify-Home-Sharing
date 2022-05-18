@@ -57,7 +57,7 @@ public class AppScanner
             // Le user server fait un refresh de son contenu, qui va update le contenu sur scanner.
             // Le user client cherche es fichiers, demandera un refresh au scanner pour avoir les derniers updates.
 
-        // 5) Quand un client se déconnecte, l'enlever de la liste
+        // 5) Quand un client se déconnecte, l'enlever de la liste  .
 
 
         System.out.print(cc.getCOLOR());
