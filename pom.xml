@@ -69,7 +69,7 @@
                                 <manifest>
                                     <addClasspath>true</addClasspath>
                                     <!-- Le chemin d'accès à notre MAIN -->
-                                    <mainClass>ch.hevs.User.UI.UInterface</mainClass>
+                                    <mainClass>ch.hevs.User.AppUser</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -81,10 +81,10 @@
 
                     <!-- SERVER BUILD -->
                     <execution>
-                        <id>build-spotify_Server</id>
+                        <id>build-spotify_Scanner</id>
                         <configuration>
                             <!-- Donner le NOM du PROJET -->
-                            <finalName>${project.name}_SERVER__</finalName>
+                            <finalName>${project.name}_SCANNER__</finalName>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
@@ -92,7 +92,7 @@
                                 <manifest>
                                     <addClasspath>true</addClasspath>
                                     <!-- Le chemin d'accès à notre MAIN -->
-                                    <mainClass>ch.hevs.Scanner.UI.server</mainClass>
+                                    <mainClass>ch.hevs.Scanner.AppScanner</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
