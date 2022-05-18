@@ -2,14 +2,13 @@ package ch.hevs.Scanner;
 
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
-import ch.hevs.User.Client;
-import ch.hevs.User.Server;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 /**
  * @author Elias & Arthur
@@ -18,24 +17,14 @@ import java.util.Scanner;
  *      - Contient la liste des clients qui ont des fichiers audios
  *          - adresse IP / Port / Liste fichiers
  */
-
-    /*
- 		- HasTable <IP, Content> AllUsersContent
-		- List AllUsersIPConected
-
-		○ ScanSubnet()
-		○ ScanUsersContent(Users[].contentList)
-		○ ShowLogs()
-
-* */
 public class AppScanner
 {
     private static final int PORT_DU_SERVEUR = 45000;
-    private static LinkedList <Server> connectedUsers; // Liste des clients connectés
+    private static LinkedList <UserHandler> connectedUsers; // Liste des clients connectés
     private static boolean isRunning;
     private static ConsoleColors cc = ConsoleColors.PUPLE;;
 
-    private static ServerSocket server;
+    private static ServerSocket socketScannerListening;
     private static Socket socket;
 
 
@@ -88,7 +77,7 @@ public class AppScanner
 
             // Fermeture du serveur et de son socket d'accès
             System.out.println("Scanner Closed");
-            server.close();
+            socketScannerListening.close();
             socket.close();
 
 
@@ -109,16 +98,16 @@ public class AppScanner
         Config.getConfig();
 
         isRunning = true;
-        connectedUsers = new LinkedList<Server>();
+        connectedUsers = new LinkedList<UserHandler>();
 
         // Création d'un serveur qui écoute sur le port 45000
-        server = new ServerSocket(PORT_DU_SERVEUR);
+        socketScannerListening = new ServerSocket(PORT_DU_SERVEUR);
     }
 
     private static void scanSubnet() throws IOException
     {
         // Création d'un point de communication "socket" pour chacun des clients qui se connectent
-        socket = server.accept();
+        socket = socketScannerListening.accept();
 
         // Confirmation console qu'un client est connecté et affichage de ses informations
         System.out.println( "Un nouveau client s'est connecté");
@@ -142,19 +131,46 @@ public class AppScanner
 
     }
 
-    private static void UpdateUsersContent()
+    private static void NEWMAIN() throws IOException
     {
+        // server is listening on port 5056
+        ServerSocket ss = new ServerSocket(5056);
+
+        // running infinite loop for getting
+        // client request
+        while (true)
+        {
+            Socket s = null;
+
+            try
+            {
+                // socket object to receive incoming client requests
+                s = ss.accept();
+
+                System.out.println("A new client is connected : " + s);
+
+                // obtaining input and out streams
+                DataInputStream dis = new DataInputStream(s.getInputStream());
+                DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+                System.out.println("Assigning new thread for this client");
+
+                // create a new thread object
+                UserHandler uh = new UserHandler(s, dis, dos);
+                // Ajouter le user au liste des clients connectés
+                connectedUsers.add(uh);
+
+                Thread t = new Thread(uh);
+                // Invoking the start() method
+                t.start();
+
+            }
+            catch (Exception e){
+                s.close();
+                e.printStackTrace();
+            }
+
+        }
     }
-
-    private static void ShowLogs()
-    {
-    }
-
-    private static void ScanUsersContent()
-    {
-    }
-
-
-
 
 }
