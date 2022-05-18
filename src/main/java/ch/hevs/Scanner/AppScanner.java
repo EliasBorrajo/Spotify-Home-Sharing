@@ -2,14 +2,12 @@ package ch.hevs.Scanner;
 
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
-import ch.hevs.User.Client;
 import ch.hevs.User.Server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 /**
  * @author Elias & Arthur

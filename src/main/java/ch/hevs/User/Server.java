@@ -4,7 +4,6 @@ import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 
 import java.io.File;
-import java.io.Serializable;
 import java.net.ServerSocket;
 import java.nio.file.Paths;
 import java.util.ArrayList;

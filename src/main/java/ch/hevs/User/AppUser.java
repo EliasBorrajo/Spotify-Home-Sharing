@@ -3,9 +3,6 @@ package ch.hevs.User;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-
 /**
  * Cette classe permet de lancer l'application. Elle permet de lancer le serveur et le client, pour un seul utilisateur.
  *
