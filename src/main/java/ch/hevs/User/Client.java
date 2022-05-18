@@ -1,22 +1,14 @@
 package ch.hevs.User;
 
-import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Client implements Runnable
 {
     // A T T R I B U T S
-    private String ipUser;
-    private int portUserServeur;
-    private ArrayList<Musique> listeDeMusiques;
     private boolean isConnected;
 
     private ConsoleColors cc;
@@ -25,7 +17,6 @@ public class Client implements Runnable
     // C O N S T R U C T E U R
     public Client()
     {
-        listeDeMusiques = new ArrayList<Musique>();
         cc = ConsoleColors.GREEN;
         isConnected = false;
     }
@@ -61,6 +52,7 @@ public class Client implements Runnable
         // - Ecouter de la musique en streaming --> listen dans un nouveau thread. On peut stop la music à tout moment, et continuer à utiliser l'application
 
         // 1) On doit se connecter au scanner
+
         do
         {
             System.out.println("Try to connect to Scanner...");
@@ -119,8 +111,8 @@ public class Client implements Runnable
 
                 case 2:
                     System.out.println("SELECTED : Option 2 - Update my music list :");
-                    getUpdatedListeDeMusiques();
-                    printListeDeMusiques();
+                    //getUpdatedListeDeMusiques();
+                    //printListeDeMusiques();
                     // serialiser liste ?
                     break;
 
@@ -150,10 +142,7 @@ public class Client implements Runnable
 
     }
 
-    private void showMusicsToStream()
-    {
-        System.out.println("TODO : Show musics to stream here...");
-    }
+
 
     /**
      * Connexion au scanner pour récupérer la liste de musiques à streamer
@@ -171,7 +160,7 @@ public class Client implements Runnable
             isConnected = true;
 
             System.out.println("Mon adresse IP est : " + InetAddress.getLocalHost().getHostAddress());
-            ipUser = InetAddress.getLocalHost().getHostAddress();
+            //ipUser = InetAddress.getLocalHost().getHostAddress();
 
         }
         catch (IOException e)
@@ -179,68 +168,21 @@ public class Client implements Runnable
             // TODO : Gerer le cas ou il n'a pas de SCANNER sur le réseau
             throw new RuntimeException(e);
         }
-
-
     }
 
-    /**
-     * Cette methode GET, va aller voir le répertoire UPLOAD de mon PC
-     * et va mettre à jour ma liste de musique à distribuer.
-     * @return : Retourne ma liste de musiques que je mets à disposition.
-     */
-    public ArrayList<Musique> getUpdatedListeDeMusiques()
+    private void showMusicsToStream()
     {
-        // 1) Entrer dans répertoire upload
-        // 2) Chequer tous les fichiers .wav / .mp3
-        // 3) Créer MUSIQUE avec leur nom & taille de fichier
-        // 4) Ajouter la musique à la liste de musiques
-
-        // 1) Entrer dans répertoire upload
-        File directoryUpload = new File( String.valueOf(  Config.getConfig().getPathUpload()  ) );
-
-        // on va stocker tout le contenu du dossier dans une liste
-        String[] fileList = directoryUpload.list();
-
-        // Vider la liste de musique actuelle, pour remplacer par la nouvelle
-        listeDeMusiques.clear();
-
-
-        // 2) Filtrer les élements de la liste
-        for (int i = 0; i < fileList.length; i++)
-        {
-            // On récupère dans une String l'extension du fichier
-            int extensionIndex = fileList[i].lastIndexOf(".") + 1;
-            String extension = fileList[i].substring(extensionIndex);
-
-            // Si son extention est mp3, on créé un objet musique qu'on stocke dans la liste d'objets musique
-            if (extension.equals("mp3"))
-            {
-                // On récupère la taille de la musique
-                File fileMusique = new File(Paths.get(directoryUpload.getPath(), fileList[i]).toString());
-                long tailleMusique = fileMusique.length();
-
-                // 3) Créer nouvelle MUSIQUE avec leur nom & taille de fichier
-                Musique musique = new Musique(fileList[i], tailleMusique);
-                musique.toString();
-
-                // 4) que l'on ajoute à la liste d'objets musique
-                listeDeMusiques.add(musique);
-            }
-        }
-        // On retourne la liste d'objets musique
-        return listeDeMusiques;
+        System.out.println("TODO : Show musics to stream here...");
     }
 
-    /**
-     * Affiche la liste de musiques que je mets à disposition dans mon dossier upload du PC
-     */
-    public void printListeDeMusiques()
+    private void selectSong(int idUser, int idSong)
     {
-        // On affiche la liste des musiques
-        for (Musique m : listeDeMusiques)
-        {
-            System.out.println(m.toString());
-        }
-    }
+        // on sait que le user ID X de la liste, a une IP & Port.
+        // On demande au scanner de nous envoyer l'objet de User X
 
+        // Comme ça, notre client connait ce qu'il doit envoyer au serveur du User X pour démarrer la musique.
+
+
+
+    }
 }

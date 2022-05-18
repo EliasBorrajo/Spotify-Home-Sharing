@@ -44,27 +44,24 @@ public class AppUser
         serverThread.start();
         clientThread.start();
 
-
-
-/*
-        isRunningApp = true;
-
-        while (isRunningApp)
+        if (serverThread.isAlive() && clientThread.isAlive())
         {
-
+            isRunningApp = true;
         }
 
-        // On attend que les threads soient terminés pour fermer le programme
-        System.out.println("Waiting for threads to finish");
-        System.out.println("Closing server thread");
-        System.out.println("Closing client thread");
-        serverThread.interrupt();
-        clientThread.interrupt();
 
-        System.out.println("Closing application");
-        System.exit(0);
+        if (isRunningApp == false)
+        {
+            // On attend que les threads soient terminés pour fermer le programme
+            System.out.println("Waiting for threads to finish");
+            System.out.println("Closing server thread");
+            System.out.println("Closing client thread");
+            serverThread.interrupt();
+            clientThread.interrupt();
 
-*/
+            System.out.println("Closing application");
+            System.exit(0);
+        }
 
     }
 }
