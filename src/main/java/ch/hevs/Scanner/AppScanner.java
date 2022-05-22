@@ -4,6 +4,8 @@ import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Server;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,26 +14,17 @@ import java.util.LinkedList;
 /**
  * @author Elias & Arthur
  * SCANNER --> 1 app scanner par subnet P2P
- *      - Son adresse IP et PORT doivent être connus, les utilisateurs se partagent l'information oralement.
- *      - Contient la liste des clients qui ont des fichiers audios
- *          - adresse IP / Port / Liste fichiers
+ * - Son adresse IP et PORT doivent être connus, les utilisateurs se partagent l'information oralement.
+ * - Contient la liste des clients qui ont des fichiers audios
+ * - adresse IP / Port / Liste fichiers
  */
-
-    /*
- 		- HasTable <IP, Content> AllUsersContent
-		- List AllUsersIPConected
-
-		○ ScanSubnet()
-		○ ScanUsersContent(Users[].contentList)
-		○ ShowLogs()
-
-* */
 public class AppScanner
 {
     private static final int PORT_DU_SERVEUR = 45000;
-    private static LinkedList <Server> connectedUsers; // Liste des clients connectés
+    private static LinkedList<UserHandler> connectedUsers;
     private static boolean isRunning;
-    private static ConsoleColors cc = ConsoleColors.PUPLE;;
+    private static ConsoleColors cc = ConsoleColors.PURPLE;
+
 
     private static ServerSocket server;
     private static Socket socket;
@@ -41,6 +34,7 @@ public class AppScanner
      * Lance le scanner
      * Il sert aux clients qui se connectent au scanner, de savoir quels autres existent sur le subnet,
      * de pouvoir s'y connecter afin de leur récuperer leurs fichiers.
+     *
      * @param args
      */
     public static void main(String[] args)
@@ -49,11 +43,9 @@ public class AppScanner
 
         // 2) Se mettre en attente & écoute, pour avoir des clients
 
-        // 3) Quand un client se connecte, l'enregistrer dans une linked list, avec son IP et son contenu
+        // 3) Quand un client se connecte, l'enregistrer dans une linked list, avec son IP / Port / Contenu
 
-        // 4) Quand un client rajoute un fichier, mettre à jour la liste des fichiers du client concerné
-            // Le user server fait un refresh de son contenu, qui va update le contenu sur scanner.
-            // Le user client cherche es fichiers, demandera un refresh au scanner pour avoir les derniers updates.
+        // 4) Créer un thread pour chaque client
 
         // 5) Quand un client se déconnecte, l'enlever de la liste
 
@@ -67,28 +59,15 @@ public class AppScanner
             initScanner();
 
             //2) Se mettre en attente & écoute, pour avoir des clients
-            while(isRunning)
+            while (isRunning)
             {
-
-
-                scanSubnet();
-
-                //updateContentList(); //TODO : le serveur GET de tous ses users connectés les fichiers, toute les X secondes ? Thread ?
-
-
-                /*Scanner scan = new Scanner(System.in);
-                if(scan.nextLine().equals("stop")) // TODO : FOnctionne 1 fois sur 2
-                {
-                    isRunning = false;
-                    System.out.println("Scanner stopped");
-                }*/
+                listenAndAcceptUsers();
             }
 
             // Fermeture du serveur et de son socket d'accès
             System.out.println("Scanner Closed");
             server.close();
             socket.close();
-
 
 
         } catch (IOException e)
@@ -99,60 +78,76 @@ public class AppScanner
 
     /**
      * Initiliser le Scanner avant de le lancer
+     *
      * @throws IOException
      */
-    private static void initScanner() throws IOException
+    private static void initScanner()
     {
         // Configuration des dossiers du USER
         Config.getConfig();
 
         isRunning = true;
-        connectedUsers = new LinkedList<Server>();
+        connectedUsers = new LinkedList<UserHandler>();
 
         // Création d'un serveur qui écoute sur le port 45000
-        server = new ServerSocket(PORT_DU_SERVEUR);
+        try
+        {
+            server = new ServerSocket(PORT_DU_SERVEUR);
+        } catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static void scanSubnet() throws IOException
+    /**
+     *  Se mettre en attente & écoute, pour avoir des clients
+     *  Quand un client se connecte, l'enregistrer dans une linked list, avec son IP et son contenu (liste des fichiers)
+     * @author Elias
+     */
+    private static void listenAndAcceptUsers()
     {
-        // Création d'un point de communication "socket" pour chacun des clients qui se connectent
-        socket = server.accept();
+        socket = null;
 
-        // Confirmation console qu'un client est connecté et affichage de ses informations
-        System.out.println( "Un nouveau client s'est connecté");
-        System.out.println( "IP et Port : " + socket.getRemoteSocketAddress().toString() );
-        System.out.println( "Port du serveur : " + socket.getLocalPort() );
+        try
+        {
+            // socket object to receive incoming client requests
+            socket = server.accept();
 
-        //Client client1 = new Client(socket.getInetAddress(), socket.getPort());
-        //client1.getListeDeMusiques();
+            System.out.println("Un nouveau client s'est connecté : " + socket);
+            System.out.println("IP et Port : " + socket.getRemoteSocketAddress().toString());
+                                                                // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
 
-        // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
+            // obtaining input and out streams
+            DataInputStream  dis = new DataInputStream ( socket.getInputStream()  );
+            DataOutputStream dos = new DataOutputStream( socket.getOutputStream() );
 
-        //Client client = new Client(socket.getInetAddress(), socket.getPort());
-        //client.getListeDeMusiques();
+            System.out.println("Assigning new thread for this client");
 
-        // 3) Get le client serialisé et l'ajouter à la liste des clients connectés
+            // create a new thread object
+            UserHandler uh = new UserHandler(socket, dis, dos, connectedUsers);
+            Thread t = new Thread( uh );
 
-        // 4) Quand un client rajoute un fichier, mettre à jour la liste des fichiers du client concerné
-            // Le user server fait un refresh de son contenu, qui va update le contenu sur scanner.
-            // Le user client cherche es fichiers, demandera un refresh au scanner pour avoir les derniers updates.
+            // Ajouter le user au liste des clients connectés
+            connectedUsers.add(uh);
 
+            // Invoking the start() method
+            t.start();
 
+        } catch (Exception e)
+        {
+            System.err.println( cc.PURPLE.getCOLOR() +
+                                "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client");
+            // Si le socket existe, essaye de le fermer
+            try
+            {
+                socket.close();
+            } catch (IOException ex)
+            {
+                throw new RuntimeException(ex);
+            }
+
+            e.printStackTrace();
+        }
     }
-
-    private static void UpdateUsersContent()
-    {
-    }
-
-    private static void ShowLogs()
-    {
-    }
-
-    private static void ScanUsersContent()
-    {
-    }
-
-
-
 
 }

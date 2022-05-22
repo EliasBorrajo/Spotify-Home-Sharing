@@ -114,6 +114,7 @@ public class Client implements Runnable
                     //getUpdatedListeDeMusiques();
                     //printListeDeMusiques();
                     // serialiser liste ?
+                    isRunning = false;
                     break;
 
                 case 3:
