@@ -2,9 +2,13 @@ package ch.hevs.Scanner;
 
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
+import ch.hevs.User.Client;
 import ch.hevs.User.Server;
 
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -126,33 +130,15 @@ public class AppScanner
         //Client client1 = new Client(socket.getInetAddress(), socket.getPort());
         //client1.getListeDeMusiques();
 
-        // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
-
-        //Client client = new Client(socket.getInetAddress(), socket.getPort());
-        //client.getListeDeMusiques();
-
-        // 3) Get le client serialisé et l'ajouter à la liste des clients connectés
-
-        // 4) Quand un client rajoute un fichier, mettre à jour la liste des fichiers du client concerné
-            // Le user server fait un refresh de son contenu, qui va update le contenu sur scanner.
-            // Le user client cherche es fichiers, demandera un refresh au scanner pour avoir les derniers updates.
+        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        try {
+            Client clientDeerialise = (Client) ois.readObject();
+            System.out.println(clientDeerialise.toString());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
     }
-
-    private static void UpdateUsersContent()
-    {
-    }
-
-    private static void ShowLogs()
-    {
-    }
-
-    private static void ScanUsersContent()
-    {
-    }
-
-
-
 
 }

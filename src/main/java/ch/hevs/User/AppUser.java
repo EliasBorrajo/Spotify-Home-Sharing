@@ -1,29 +1,33 @@
 package ch.hevs.User;
 
+
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 
-/**
+import java.util.ArrayList;
+
+/*
  * Cette classe permet de lancer l'application. Elle permet de lancer le serveur et le client, pour un seul utilisateur.
- *
  * @author Elias Borrajo
  */
+
 public class AppUser
 {
     private static boolean isRunningApp;
+    private static ArrayList<Musique> musicList = new ArrayList<Musique>();
 
     /**
      * Lance l'application.
      * Va lancer le serveur et le client, chacun dans un thread.
-     * @param args
      */
+
     public static void main(String[] args)
     {
         // Configuration des dossiers du USER
         Config.getConfig();
 
         // User aura 2 threads, un thread pour le client, l'autre pour le serveur
-        Client client = new Client();
+        Client client = new Client("127.0.0.1", 50000, musicList );
         Server server = new Server();
 
         Thread clientThread = new Thread(client);
@@ -62,3 +66,4 @@ public class AppUser
 
     }
 }
+
