@@ -45,7 +45,10 @@ public class AppUser
         {
             isRunningApp = true;
         }
-
+        else
+        {
+            isRunningApp = false;
+        }
 
         if (isRunningApp == false)
         {

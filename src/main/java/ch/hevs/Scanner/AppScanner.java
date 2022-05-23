@@ -4,15 +4,13 @@ import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
 /**
- * @author Elias & Arthur
+ * @author Elias
  * SCANNER --> 1 app scanner par subnet P2P
  * - Son adresse IP et PORT doivent être connus, les utilisateurs se partagent l'information oralement.
  * - Contient la liste des clients qui ont des fichiers audios
@@ -20,16 +18,17 @@ import java.util.LinkedList;
  */
 public class AppScanner
 {
+    // A T T R I B U T S
     private static final int PORT_DU_SERVEUR = 45000;
     private static LinkedList<UserHandler> connectedUsers;
     private static boolean isRunning;
     private static ConsoleColors cc = ConsoleColors.PURPLE;
 
-
     private static ServerSocket server;
     private static Socket socket;
 
 
+    // M A I N
     /**
      * Lance le scanner
      * Il sert aux clients qui se connectent au scanner, de savoir quels autres existent sur le subnet,
@@ -52,7 +51,6 @@ public class AppScanner
 
         System.out.print(cc.getCOLOR());
         System.out.println("Scanner started");
-        System.out.println("To stop the scanner, type 'stop'");
         try
         {
             //1) Initialiser le Scanner en écoute
@@ -72,10 +70,12 @@ public class AppScanner
 
         } catch (IOException e)
         {
+            System.err.println("Scanner - Init OR Listen : Error");
             throw new RuntimeException(e);
         }
     }
 
+    // M E T H O D E S
     /**
      * Initiliser le Scanner avant de le lancer
      *
@@ -95,6 +95,7 @@ public class AppScanner
             server = new ServerSocket(PORT_DU_SERVEUR);
         } catch (IOException e)
         {
+            System.err.println("SCANNER : Impossible de créer un serveur sur le port " + PORT_DU_SERVEUR);
             throw new RuntimeException(e);
         }
     }
@@ -114,14 +115,15 @@ public class AppScanner
             socket = server.accept();
 
             System.out.println("Un nouveau client s'est connecté : " + socket);
-            System.out.println("IP et Port : " + socket.getRemoteSocketAddress().toString());
-                                                                // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
+            // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
 
             // obtaining input and out streams
+            //InputStream is = socket.getInputStream(); // TODO : Donner ceci au constructeur de UserHandler, et créer les buffer dans UserHandler
             DataInputStream  dis = new DataInputStream ( socket.getInputStream()  );
             DataOutputStream dos = new DataOutputStream( socket.getOutputStream() );
 
-            System.out.println("Assigning new thread for this client");
+
+            System.out.println("\t Assigning new thread for this client");
 
             // create a new thread object
             UserHandler uh = new UserHandler(socket, dis, dos, connectedUsers);
@@ -135,14 +137,14 @@ public class AppScanner
 
         } catch (Exception e)
         {
-            System.err.println( cc.PURPLE.getCOLOR() +
-                                "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client");
+            System.err.println( "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client");
             // Si le socket existe, essaye de le fermer
             try
             {
                 socket.close();
             } catch (IOException ex)
             {
+                System.err.println("Socket non fermé, impossible de le fermer car non existant");
                 throw new RuntimeException(ex);
             }
 

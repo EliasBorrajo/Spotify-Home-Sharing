@@ -2,15 +2,18 @@ package ch.hevs.User;
 
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client implements Runnable
+public class Client implements Runnable, Serializable
 {
     // A T T R I B U T S
     private boolean isConnected;
-
+    private int NUMERO = 666;
+    private transient Socket socket;
     private ConsoleColors cc;
 
 
@@ -81,6 +84,18 @@ public class Client implements Runnable
         // 2) On envoie ma liste de musiques au scanner
         System.out.println("Envoi de ma liste de musiques au scanner...");
         //sendListeDeMusiques(); // On doit envoyer la liste de musiques au scanner ? ou la GET depuis le scanner à chaque nouvel utilisateur ??
+
+        try
+        {
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(this);
+            oos.flush();
+        } catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+
 
         boolean isRunning = true;
         int userChoice;
@@ -154,7 +169,7 @@ public class Client implements Runnable
     {
         // Tentative de connection au serveur
         try {
-            Socket socket = new Socket(ipServeur, portDuServeur);
+            socket = new Socket(ipServeur, portDuServeur);
 
             // Confirmation de connection
             System.out.println("Je suis connecté au Scanner");
@@ -185,5 +200,16 @@ public class Client implements Runnable
 
 
 
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Client{" +
+                "isConnected=" + isConnected +
+                ", NUMERO=" + NUMERO +
+                ", socket=" + socket +
+                ", cc=" + cc +
+                '}';
     }
 }
