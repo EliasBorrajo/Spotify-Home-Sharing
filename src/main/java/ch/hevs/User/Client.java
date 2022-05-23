@@ -16,7 +16,7 @@ import java.util.Scanner;
 // La classe implémente l'extension Runnable et Serializable
 public class Client implements Runnable, Serializable
 {
-    // Attributs de la classe
+    // A T T R I B U T S
     // Le mot clé transient permet de choisir les attributs de la classe que l'on ne veut pas sérialiser
     private static final long serialVersionUID = 44L;
     private String userIp;
@@ -28,7 +28,7 @@ public class Client implements Runnable, Serializable
     private transient boolean isRunning;
     private transient ConsoleColors consoleColors;
 
-    // Constructeur
+    // C O N S T R U C T E U R
     public Client(String userIP, int serverPort, ArrayList<Musique> musicList)
     {
         this.userIp = userIP;
@@ -40,6 +40,7 @@ public class Client implements Runnable, Serializable
         consoleColors = ConsoleColors.GREEN;
     }
 
+    // R U N N A B L E
     /**
      * Cette méthode permet de lancer la connection d'un client à un serveur
      */
@@ -69,6 +70,7 @@ public class Client implements Runnable, Serializable
         showMenuToClient();
     }
 
+    // M E T H O D E S
     /**
      * Cette méthode permet de lancer la connection d'un client à un serveur
      * @return un tableau de String contenant l'adresse IP du serveur ainsi que son port
@@ -130,8 +132,9 @@ public class Client implements Runnable, Serializable
             do {
                 // Présentation du menu de fonctionnalités au client
                 System.out.println("Menu : ");
-                System.out.println("1) Show the available servers");
+                System.out.println("1) Show the available servers with their musics to stream");
                 System.out.println("2) Play a music");
+                System.out.println("X) Update my music list");
                 System.out.println("3) Logout");
                 // Tant que la saisie dans la console client est différente d'un int
                 while (!scan.hasNextInt()) // If not an int !
@@ -235,6 +238,8 @@ public class Client implements Runnable, Serializable
         }
         // On inverse la valeur du booléen afin de pouvoir quitter la boucle du menu
         isRunning = !sc.nextBoolean();
+
+        System.out.println("Goodbye");
     }
 
     /**

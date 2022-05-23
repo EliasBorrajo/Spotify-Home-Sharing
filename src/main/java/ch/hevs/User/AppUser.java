@@ -4,6 +4,7 @@ package ch.hevs.User;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 
+import java.net.ServerSocket;
 import java.util.ArrayList;
 
 /*
@@ -16,9 +17,11 @@ public class AppUser
     private static boolean isRunningApp;
     private static ArrayList<Musique> musicList = new ArrayList<Musique>();
 
+
     /**
      * Lance l'application.
      * Va lancer le serveur et le client, chacun dans un thread.
+     * @param args
      */
 
     public static void main(String[] args)
@@ -49,7 +52,10 @@ public class AppUser
         {
             isRunningApp = true;
         }
-
+        else
+        {
+            isRunningApp = false;
+        }
 
         if (isRunningApp == false)
         {
@@ -66,4 +72,3 @@ public class AppUser
 
     }
 }
-

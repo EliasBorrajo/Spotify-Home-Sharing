@@ -15,9 +15,10 @@ public enum ConsoleColors
     GREEN("\u001B[32m"),
     YELLOW("\u001B[33m"),
     BLUE("\u001B[34m"),
-    PUPLE("\u001B[35m"),
+    PURPLE("\u001B[35m"),
     CYAN("\u001B[36m"),
     WHITE("\u001B[37m"),
+
     BLACK_BACKGROUND("\u001B[40m"),
     RED_BACKGROUND("\u001B[41m"),
     GREEN_BACKGROUND("\u001B[42m"),
