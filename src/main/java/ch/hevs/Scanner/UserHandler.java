@@ -41,7 +41,7 @@ class UserHandler implements Runnable
         //this.buffout = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
 
         this.isRunning = true;
-        this.client = new Client();
+        this.client = null;
         this.cc = ConsoleColors.PURPLE;
     }
 
