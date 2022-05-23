@@ -4,8 +4,11 @@ package ch.hevs.User;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 /*
  * Cette classe permet de lancer l'application. Elle permet de lancer le serveur et le client, pour un seul utilisateur.
@@ -16,6 +19,8 @@ public class AppUser
 {
     private static boolean isRunningApp;
     private static ArrayList<Musique> musicList = new ArrayList<Musique>();
+    private static final int PORT_DU_SERVEUR = 50000;
+    //private static final int USER_IP;
 
 
     /**
@@ -29,13 +34,24 @@ public class AppUser
         // Configuration des dossiers du USER
         Config.getConfig();
 
+        //USER_IP = //TODO : Faire INET address vu au debout des cours, come ça on a notre propre IP !
+        // Le user doit choisir entre ses 2 aresses IP wn WLAN ou LAN
+
+        try
+        {
+            Enumeration<NetworkInterface> allni = NetworkInterface.getNetworkInterfaces();
+
+        } catch (SocketException e)
+        {
+            throw new RuntimeException(e);
+        }
+
         // User aura 2 threads, un thread pour le client, l'autre pour le serveur
-        Client client = new Client("127.0.0.1", 50000, musicList );
+        Client client = new Client("127.0.0.1", PORT_DU_SERVEUR, musicList );
         Server server = new Server();
 
         Thread clientThread = new Thread(client);
         Thread serverThread = new Thread(server);
-
 
         ConsoleColors cc = ConsoleColors.BLUE;
 
@@ -51,6 +67,9 @@ public class AppUser
         if (serverThread.isAlive() && clientThread.isAlive())
         {
             isRunningApp = true;
+            //client.;
+            //sleep(1000);
+
         }
         else
         {

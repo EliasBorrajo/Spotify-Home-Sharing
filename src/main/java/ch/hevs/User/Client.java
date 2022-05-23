@@ -1,14 +1,12 @@
 package ch.hevs.User;
 
-import ch.hevs.Scanner.AppScanner;
+
+import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.InetAddress;
+
+import java.io.*;
 import java.net.Socket;
-import java.nio.channels.SocketChannel;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -17,13 +15,15 @@ import java.util.Scanner;
 public class Client implements Runnable, Serializable
 {
     // A T T R I B U T S
-    // Le mot clé transient permet de choisir les attributs de la classe que l'on ne veut pas sérialiser
     private static final long serialVersionUID = 44L;
     private String userIp;
     private int serverPort;
     private ArrayList<Musique> musicList;
-    private transient Socket socket;
 
+    // Le mot clé transient permet de choisir les attributs de la classe que l'on ne veut pas sérialiser
+    private transient Socket socket;
+    private transient DataInputStream dis;
+    private transient DataOutputStream dos;
     private transient boolean isConnected;
     private transient boolean isRunning;
     private transient ConsoleColors consoleColors;
@@ -47,25 +47,32 @@ public class Client implements Runnable, Serializable
     @Override
     public void run()
     {
-        // Tentative de connection au serveur...
-            do
-            {
-                // On récupère les informations nécessaires àa la connection
-                String []informations = getConnectionInformations();
-                String serverIp = informations[0];
-                int serverPort = Integer.parseInt(informations[1]);
+        // 1) On scanne les musiques présentes sur notre PC pour remplire la liste de musiques du client (musicList)
+        updateMyMusicList();
+
+        // 2) Tentative de connection au serveur...
+        do
+        {
+            // On récupère les informations nécessaires àa la connection
+            String[] informations = getConnectionInformations();
+            String scannerIP = informations[0];
+            int scannerPort  = Integer.parseInt(informations[1]);
+
             // Tentative de connection au serveur
             try
             {
-                connectToScanner(serverIp, serverPort);
-
+                //connectToScanner(scannerIP, scannerPort); // TODO : Cette ligne à decommenter pour la version finale
+                connectToScanner("127.0.0.1", 45000);
             } catch (Exception e)
             {
-                // Message d'erreur en cas d'échec de connection
                 System.err.println("La connection a échoué. Veuillez vérifier les informations de connection et essayer à nouveau.");
             }
+
             // ... tant que la connection n'a pas été établie
         } while (isConnected == false);
+
+        // 3) On Serialise le client et on l'envoie au scanner
+        sendSerializedClientPackage();
 
         showMenuToClient();
     }
@@ -73,148 +80,244 @@ public class Client implements Runnable, Serializable
     // M E T H O D E S
     /**
      * Cette méthode permet de lancer la connection d'un client à un serveur
+     *
      * @return un tableau de String contenant l'adresse IP du serveur ainsi que son port
      */
-    public String [] getConnectionInformations ()
+    public String[] getConnectionInformations()
     {
-        // Création d'un tableau permettant de retourner toutes les infos nmécessaires à la connection à un serveur
-        String [] informations = new String[2];
-        // A gérer plus tard car esthétique pure...
+        // Création d'un tableau permettant de retourner toutes les infos nécessaires à la connection à un serveur
+        String[] informations = new String[2];
+
         System.out.print(consoleColors.GREEN.getCOLOR());
-        // Information console
-        System.out.println("Client is running :");
-        System.out.println("Enter your IP address : ");
-        // Création d'un scanner d'écoute des saisis console
-        Scanner sc = new Scanner(System.in);
+        System.out.println("Client is running...");
+        System.out.println("Connect to the scanner with the following informations :");
+        System.out.println("Enter scanner IP address : ");
+
         // Création d'une variable String qui récupérera la prochaine saisie client dans la console
+        Scanner sc = new Scanner(System.in);
         String serverIp = sc.nextLine();
-        // Mettre serverIp dans le tableau de retour
         informations[0] = serverIp;
-        System.out.println("Enter your port : ");
+
         // Création d'une variable int qui récupérera la prochaine saisie client dans la console
+        System.out.println("Enter scanner port : ");
         int serverPort = sc.nextInt();
-        // Mettre serverPort dans le tableau de retour
         informations[1] = Integer.toString(serverPort);
+
+
         // Retour du tableau avec les infos remplies
         return informations;
     }
 
     /**
      * Cette méthode permet de se connecter au scanner
-     * @param serverIp : l'adresse IP du serveur
+     *
+     * @param serverIp   : l'adresse IP du serveur
      * @param serverPort : le port du serveur
      */
-    public void connectToScanner(String serverIp, int serverPort) {
-        try {
+    public void connectToScanner(String serverIp, int serverPort)
+    {
+        try
+        {
             // Tentative de connection au serveur par le biais d'un socket
             socket = new Socket(serverIp, serverPort);
             // Confirmation de connection
             System.out.println("I'm connected !");
             isConnected = true;
+
+            // Création des flux de données pour la communication avec le serveur (InputStream et OutputStream)
+            dis = new DataInputStream(socket.getInputStream());
+            dos = new DataOutputStream(socket.getOutputStream());
         }
         // En cas d'échec de connection au scanner
-        catch (IOException e) {
+        catch (IOException e)
+        {
+            System.err.println("Connection to scanner failed !");
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Cette méthode permet d'envoyer un objet client sérialisé au scanner
+     */
+    public void sendSerializedClientPackage()
+    {
+        try
+        {
+            // Envoyer message au scanner pour lui dire que on va lui envoyer un objet
+            dos.writeUTF("sendClientInfos");
+
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            // Tentative d'envoie de l'objet client au scanner
+            oos.writeObject(this);
+            oos.flush();
+            oos.reset();
+
+
+            // Attend une confirmation du scanner
+            String receivedMessage = dis.readUTF();
+            if (receivedMessage.equals("Client_Received"))
+            {
+                System.out.println("Scanner got my Client information Serialization !");
+            }
+            else
+            {
+                System.err.println("Scanner did not received my Client information Serialization !");
+                System.err.println("Something went wrong !, disconnecting from scanner, try again...");
+                socket.close();
+                isConnected = false;
+                isRunning = false;
+            }
+
+        } catch (IOException e)
+        {
+            System.err.println("CLIENT - SendSerializedClientPackage : Could not send the object to the Scanner.");
+            e.printStackTrace();
+
+            System.out.println("Something went wrong !, disconnecting from scanner, try again...");
+            try
+            {
+                socket.close();
+            } catch (IOException ex)
+            {
+                throw new RuntimeException(ex);
+            }
+            isConnected = false;
+            isRunning = false;
         }
     }
 
     /**
      * Cette méthode permet d'afficher les différentes fonctionnalités de l'application au client
      */
-   public void showMenuToClient()
+    public void showMenuToClient()
     {
+        int userChoice;
+        Scanner scan = new Scanner(System.in);
 
-            // Variable permettant d'enregistrer le choix console du client
-            int userChoice;
-            // Scanner qui permettra d'écouter les saisies client dans la console
-            Scanner scan = new Scanner(System.in);
-            // Do...
-            do {
-                // Présentation du menu de fonctionnalités au client
-                System.out.println("Menu : ");
-                System.out.println("1) Show the available servers with their musics to stream");
-                System.out.println("2) Play a music");
-                System.out.println("X) Update my music list");
-                System.out.println("3) Logout");
-                // Tant que la saisie dans la console client est différente d'un int
-                while (!scan.hasNextInt()) // If not an int !
-                {
+        do
+        {
+            // Présentation du menu de fonctionnalités au client
+            System.out.println("MENU : ");
+            System.out.println("1) Show the available servers with their musics to stream");
+            System.out.println("2) Play a music");
+            System.out.println("3) Update my music list available on my PC to the scanner");
+            System.out.println("4) Logout");
+
+
+            // Tant que la saisie dans la console client est différente d'un int
+            while (!scan.hasNextInt()) // If not an int !
+            {
+                // Message d'erreur
+                System.err.println("Please enter a valid input number ! Try again...");
+                // Ecoute de la prochaine saisie console
+                scan.next();
+            }
+            userChoice = scan.nextInt();
+
+
+            switch (userChoice)
+            {
+                // Option permettant de montrer au client les différents serveurs connectés au scanner
+                case 1:
+                    System.out.println("Loading available servers...");
+                    showServersFromScanner();
+                    break;
+
+                // Option permettant au client de jouer une musique
+                case 2:
+                    break;
+
+                // Option permettant au client de MAJ sa liste de musiques disponibles sur son PC
+                case 3:
+                    System.out.println("Loading your music...");
+                    updateMyMusicList();
+                    sendSerializedClientPackage();
+                    break;
+
+                // Option permettant au client de se déconnecter de l'application
+                case 4:
+                    System.out.println("Logout...");
+                    logout();
+                    break;
+
+                // Dans le cas ou le client saisirait une option inexistante
+                default:
                     // Message d'erreur
-                    System.err.println("Please enter a valid data format");
-                    // Ecoute de la saisie console
-                    scan.next();
-                }
-                // On enregistre la saisie du client dans une variable
-                userChoice = scan.nextInt();
-                // En fonction de la saisie du client, on appelle la méthode qui est concernée
-                switch (userChoice) {
-                    // Option permettant de montrer au client les différents serveurs connectés au scanner
-                    case 1:
-                        System.out.println("Loading available servers...");
-                        showServersFromScanner();
-                        break;
-                    // Option permettant au client de jouer une musique
-                    case 2:
-                        System.out.println("Loading your music...");
-                        sendSerializedClientPackage();
-                        // playSelectedMusic();
-                        break;
-                    // Option permettant au client de se déconnecter de l'application
-                    case 3:
-                        System.out.println("Logout...");
-                        logout();
-                        break;
-                    // Dans le cas ou le client saisirait une option inexistante
-                    default:
-                        // Message d'erreur
-                        System.err.println("Invalid option, please refer to the displayed menu");
-                        break;
-                }
-                // Tant que le client ne se déconnecte pas
-            } while (isRunning == true);
-        }
+                    System.err.println("Invalid option, please refer to the displayed menu");
+                    break;
+            }
+            // Tant que le client ne se déconnecte pas
+        } while (isRunning == true);
 
-    // TODO : à terminer...
+
+        System.out.println("Goodbye");
+        try
+        {
+            socket.close();
+            isConnected = false;
+        }
+        catch (IOException e)
+        {
+            System.err.println("CLIENT - RUN 1 : Could not close the socket before leaving and ending this thread.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Cette méthode permet de montrer au client les différents serveurs connectés au scanner
+     */
     private void showServersFromScanner()
     {
-        // Création d'une liste permettant de stocker la liste en provenance du Clientandler
-        LinkedList <Client> serversList = null;
-
-        // T E S T
-        ArrayList <Musique> clientList = null;
-        Client c1 = new Client("127.0.0.1", 99000, clientList);
-        Client c2 = new Client("127.0.0.2", 57000, clientList);
-        Client c3 = new Client("127.0.0.3", 23000, clientList);
-
-        serversList.add(c1);
-        serversList.add(c2);
-        serversList.add(c3);
-        
-        // 1) Appeler la méthode  getListOfServersFromScanner
-        serversList = getListOfServersFromScanner();
-
-        // 2) Appeler la méthode deserializeAvailableServersList();
-        deserializeAvailableServersList();
+        // 1) Recuperer la liste des clients connectés au scanner
+        LinkedList<Client> usersConnectedToScanner = getListOfServersFromScanner();
 
         // 3) Afficher la liste de serveurs disponibles
-        int cpt1 = 0;
-        for (Client client: serversList)
+        int cpt_Users = 0;
+        for (Client client : usersConnectedToScanner)
         {
-            System.out.println("Client : " + cpt1 + " IP : " + client.userIp + " Port : " + client.serverPort);
-            cpt1++;
-            int cpt2 = 0;
+            System.out.println("Client : " + cpt_Users + " IP : " + client.userIp + " Port : " + client.serverPort);
+            cpt_Users++;
+
+            int cpt_Musiques = 0;
             for (Musique music : client.musicList)
             {
-                System.out.println("\t Musique n° " + cpt2 + " : " + music.getMusicFileName());
-                cpt2++;
+                System.out.println("\t Musique n° " + cpt_Musiques + " : " + music.getMusicFileName());
+                cpt_Musiques++;
             }
         }
     }
 
-    // TODO : à terminer...
-    private LinkedList<Client> getListOfServersFromScanner() {
-       // Envoyer un message par le socket "getClientList"
-        return null;
+    /**
+     * Cette methode permet de récuperer la liste des users connectés au scanner
+     * @return : la liste des clients connectés au scanner
+     */
+    private LinkedList<Client> getListOfServersFromScanner()
+    {
+        LinkedList<Client> usersConnectedToScanner = null;
+
+        // Envoyer un message par le socket "getClientList"
+        try
+        {
+            dos.writeUTF("getClientsList");
+
+            System.out.println("Waiting for clients list...");
+            ObjectInputStream ois = new ObjectInputStream( socket.getInputStream() );
+            usersConnectedToScanner = (LinkedList<Client>) ois.readObject();
+
+            System.out.println("Received clients list !");
+            // Envoyer la onfirmation de reception de la liste
+            dos.writeUTF("listReceived");
+
+            return usersConnectedToScanner;
+
+        } catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+
     }
 
     // TODO : à terminer...
@@ -226,62 +329,87 @@ public class Client implements Runnable, Serializable
     /**
      * Cette méthode permet de se déconnecter du programme
      */
-    private void logout() {
+    private void logout()
+    {
         // Scanner d'écoute des saisies console
         Scanner sc = new Scanner(System.in);
         System.out.println("Are you sure ? (true/false)");
+
         // Tant que la saisie du client n'est pas booléenne
-        while (!sc.hasNextBoolean()) {
+        while (!sc.hasNextBoolean())
+        {
             System.out.println("Are you sure ? (true/false)");
             // Ecoute de la prochaine saisie client
             sc.next();
         }
-        // On inverse la valeur du booléen afin de pouvoir quitter la boucle du menu
+        // On inverse la valeur du booléen afin de pouvoir quitter la boucle du menu principal
         isRunning = !sc.nextBoolean();
-
-        System.out.println("Goodbye");
     }
 
     /**
-     * Cette méthode permet d'envoyer un objet client sérialisé au scanner
+     * Cette methode GET, va aller voir le répertoire UPLOAD de mon PC
+     * et va mettre à jour ma liste de musique à distribuer.
+     * @return : Retourne ma liste de musiques que je mets à disposition.
      */
-    public void sendSerializedClientPackage() {
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            // Tentative d'envoie de l'objet client au scanner
-            oos.writeObject(this);
-            oos.close();
-        // En cas d'envoi impossible
-        } catch (IOException e) {
-            e.printStackTrace();
+    public ArrayList<Musique> updateMyMusicList()
+    {
+        // 1) Entrer dans répertoire upload
+        // 2) Chequer tous les fichiers .wav / .mp3
+        // 3) Créer MUSIQUE avec leur nom & taille de fichier
+        // 4) Ajouter la musique à la liste de musiques
+
+        // 1) Entrer dans répertoire upload
+        File directoryUpload = new File( String.valueOf(  Config.getConfig().getPathUpload()  ) );
+
+        // on va stocker tout le contenu du dossier dans une liste
+        String[] fileList = directoryUpload.list();
+
+        // Vider la liste de musique actuelle, pour remplacer par la nouvelle
+        musicList.clear();
+
+
+        // 2) Filtrer les élements de la liste
+        for (int i = 0; i < fileList.length; i++)
+        {
+            // On récupère dans une String l'extension du fichier
+            int extensionIndex = fileList[i].lastIndexOf(".") + 1;
+            String extension = fileList[i].substring(extensionIndex);
+
+            // Si son extention est mp3, on créé un objet musique qu'on stocke dans la liste d'objets musique
+            if (extension.equals("mp3") || extension.equals("wav"))
+            {
+                // On récupère la taille de la musique
+                File fileMusique = new File(Paths.get(directoryUpload.getPath(), fileList[i]).toString());
+                long tailleMusique = fileMusique.length();
+
+                // 3) Créer nouvelle MUSIQUE avec leur nom & taille de fichier
+                Musique musique = new Musique(fileList[i], tailleMusique);
+                musique.toString();
+
+                // 4) que l'on ajoute à la liste d'objets musique
+                musicList.add(musique);
+            }
         }
+        printListeDeMusiques();
+        // On retourne la liste d'objets musique
+        return musicList;
     }
 
     /**
-     * Cette méthode permet de désérialiser la liste de serveurs reçu afin d'en afficher son contenu au client
-     * @return une liste de clients (serveurs)
+     * Affiche la liste de musiques que je mets à disposition dans mon dossier upload du PC
      */
-    public LinkedList <Client> deserializeAvailableServersList() {
-        // Liste permettant de stocker la liste de serveurs reçue du ClientHandler
-        LinkedList <Client> serversList = null;
-        try {
-            // En attente de réception de la liste de serveurs
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            // Tentative de désérialisation de l'objet list une fois reçu
-            serversList = (LinkedList<Client>) ois.readObject();
-            ois.close();
-        // En cas de réception impossible
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+    public void printListeDeMusiques()
+    {
+        // On affiche la liste des musiques
+        for (Musique m : musicList)
+        {
+            System.out.println(m.toString());
         }
-        // On renvoi la liste de serveurs reçue
-        return serversList;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Client{" +
                 "userIp='" + userIp + '\'' +
                 ", serverPort=" + serverPort +

@@ -5,6 +5,7 @@ import ch.hevs.User.Client;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
@@ -83,15 +84,18 @@ class UserHandler implements Runnable
 
                 switch (received)
                 {
-                    case "getList":
+
+                    case "getClientsList":
                         // Le client veut la liste des clients connectés
                         // Serialiser la liste, et l'envoyer au client
+                        System.out.println("Client wants the client list");
                         sendUsersList();
                         break;
 
                     case "sendClientInfos":
                         // Le client veut envoyer ses infos
                         // Dé-serialser les infos du client quand je les reçois --> READ
+                        System.out.println("Client wants to send his infos");
                         deSerializeClientInformations();
                         break;
 
@@ -99,6 +103,7 @@ class UserHandler implements Runnable
                         // Le client se déconnecte
                         // je kill le socket connection--> close
                         // je kill le thread
+                        System.out.println("Client wants to stop");
                         System.out.println("Client " + this.socket + " sends exit...");
                         System.out.println("Closing this connection.");
                         isRunning = false;
@@ -110,13 +115,15 @@ class UserHandler implements Runnable
                         dos.writeUTF("Invalid input");
                         break;
                 }
-            } catch (IOException e)
-            {
-                System.err.println("SCANNER - run 1 : Switch Case I/O Exception !");
-                throw new RuntimeException(e);
             }
+            catch (IOException e)
+            {
+                System.out.println("User logout from scanner");
+                isRunning = false;
 
-
+                System.err.println("SCANNER - run 1 : Switch Case I/O Exception !");
+                //throw new RuntimeException(e);
+            }
         }
 
         // 4) Fin du thread
@@ -146,14 +153,22 @@ class UserHandler implements Runnable
             // 1) Récupérer les données du client (IP / Port / Contenu)
             // Se mettre en attente READ --> Le client quand il se connecte doit nous envoyer sa serialisation
             System.out.println("Waiting for client informations...");
+            String received = dis.readUTF();
+            System.out.println("Client is sending informations...");
+
+            // Ré-initialiser le client si il existe déjà
+            this.client = null;
+
             ObjectInputStream ois = new ObjectInputStream( socket.getInputStream() );
             this.client = (Client) ois.readObject();
-            System.out.println( cc.PURPLE.getCOLOR() +
-                    "Client informations received !" +
-                    "\n Scanner Handler is ready to work !");
+
 
             System.out.println( cc.PURPLE.getCOLOR() +
-                    "Client Infos : "+ client.toString());
+                    "Client informations received !"+
+                    "\nClient Infos : "+ client.toString());
+
+
+            dos.writeUTF("Client_Received");
 
         } catch (IOException e)
         {
@@ -184,17 +199,19 @@ class UserHandler implements Runnable
         // -) Le client reçoit la liste de clients, et la dé-serialise
         // -) Le client peut alors afficher la liste des clients connectés au scanner
 
-        // 1)
+        // 1) Get la liste des clients connectés au scanner (scannerUsersList)
         LinkedList<UserHandler> userListToSend = (LinkedList<UserHandler>) scannerUsersList.clone();
 
-        // 2)
+        // 2)  Créer une liste de clients (clientsList) LinkedList<Client>
+        // à partir de chaque client des userHandlers de la liste scannerUsersList
         LinkedList<Client> clientsList = new LinkedList<Client>();
         for (UserHandler uh : userListToSend)
         {
             clientsList.add( uh.getClient() );
         }
 
-        // 3)
+        // 3) Serialiser la liste de clients (clientsList)
+        // & Envoyer la liste de clients au client via le socket connection --> WRITE
         try
         {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());

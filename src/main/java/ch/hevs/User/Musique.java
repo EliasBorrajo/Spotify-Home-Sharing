@@ -1,9 +1,11 @@
 package ch.hevs.User;
 
 
-public class Musique
-{
+import java.io.Serializable;
 
+public class Musique implements Serializable
+{
+    private static final long serialVersionUID = 45L;
     private String musicFileName;
     private long musicFileSize;
 
