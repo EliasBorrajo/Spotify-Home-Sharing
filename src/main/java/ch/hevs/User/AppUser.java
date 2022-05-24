@@ -28,7 +28,6 @@ public class AppUser
      * Va lancer le serveur et le client, chacun dans un thread.
      * @param args
      */
-
     public static void main(String[] args)
     {
         // Configuration des dossiers du USER

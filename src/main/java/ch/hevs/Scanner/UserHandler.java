@@ -14,14 +14,16 @@ import java.util.LinkedList;
 class UserHandler implements Runnable
 {
     // A T T R I B U T S
-    private DateFormat forDate = new SimpleDateFormat("yyyy/MM/dd");
-    private DateFormat forTime = new SimpleDateFormat("hh:mm:ss");
-
     private final Socket socket;
     private final DataInputStream dis;
     private final DataOutputStream dos;
-    private BufferedReader buffin;
-    private BufferedWriter buffout;
+    private final InputStream is;
+    private final OutputStream os;
+    private final InputStreamReader isr;
+    private final OutputStreamWriter osw;
+    private final BufferedReader buffin;
+    private final BufferedWriter buffout;
+    private final PrintWriter pw;
 
     private boolean isRunning;
     private Client client;
@@ -31,15 +33,23 @@ class UserHandler implements Runnable
 
 
     // C O N S T R U C T E U R
-    public UserHandler(Socket s, DataInputStream dis, DataOutputStream dos, LinkedList<UserHandler> connectedUsers)
+    public UserHandler(Socket s, DataInputStream dis, DataOutputStream dos, LinkedList<UserHandler> connectedUsers) throws IOException
     {
         this.socket = s;
         this.dis = dis;
         this.dos = dos;
         this.scannerUsersList = connectedUsers;
 
-        //this.buffin = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-        //this.buffout = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
+        // OutputStream
+        this.os = s.getOutputStream();
+        this.osw = new OutputStreamWriter(os);
+        this.buffout = new BufferedWriter(osw);
+        this.pw = new PrintWriter(os, true);
+
+        // InputStream
+        this.is = s.getInputStream();
+        this.isr = new InputStreamReader(is);
+        this.buffin = new BufferedReader(isr);
 
         this.isRunning = true;
         this.client = null;
@@ -47,35 +57,32 @@ class UserHandler implements Runnable
     }
 
 
-
-
     @Override
     public void run()
     {
-        // 1) Récupérer les données du client (IP / Port / Contenu)
-        deSerializeClientInformations();
+        String received;
+        String sending;
 
-        // 2) Dire au client, qu'on a bien reçu sa sérialisation, et qu'on est prêt à traiter les requêtes
+        // 1) Récupérer les données du client (IP / Port / Contenu)
         try
         {
-            dos.writeUTF("Vous êtes connecté au scanner et à son user handler !" +
-                    "\nVos informations ont été reçues et mis à disposition des autres utilisateurs connectés !" +
-                    "\nVous pouvez désormais envoyer des requêtes au scanner.");
-        } catch (IOException e)
+            received = dis.readUTF();
+            System.out.println("Initialisation of the client : " + received);
+            deSerializeClientInformations();
+        }
+        catch (IOException e)
         {
-            System.err.println("SCANNER - run 1 : On n'a pas pu dire au client que l'on est prêt à traiter les requêtes !");
             throw new RuntimeException(e);
         }
 
 
-        // 3) Handler en attente des requêtes du client
-        String received;
-        String sending;
 
+        // 2) Handler en attente des requêtes du client
         while (isRunning)
         {
-            System.out.println( cc.PURPLE.getCOLOR() +
-                                "SCANNER - Waiting for client requests...");
+            System.out.println(cc.PURPLE.getCOLOR() +
+                    "SCANNER - Waiting for client requests...");
+
             try
             {
                 // Se mettre en écoute des requetes du client
@@ -99,7 +106,7 @@ class UserHandler implements Runnable
                         deSerializeClientInformations();
                         break;
 
-                    case "stop":
+                    case "logout":
                         // Le client se déconnecte
                         // je kill le socket connection--> close
                         // je kill le thread
@@ -122,25 +129,28 @@ class UserHandler implements Runnable
                 isRunning = false;
 
                 System.err.println("SCANNER - run 1 : Switch Case I/O Exception !");
-                //throw new RuntimeException(e);
+                throw new RuntimeException(e);
             }
         }
 
-        // 4) Fin du thread
+        // 3) Fin du thread
         try
         {
-            System.out.println( cc.PURPLE.getCOLOR() +
+            System.out.println(cc.PURPLE.getCOLOR() +
                     "SCANNER - Closing this connection.");
             this.socket.close();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             System.err.println("SCANNER - run 2 : On n'a pas pu fermer la connexion !");
             throw new RuntimeException(e);
         }
 
-        System.out.println( cc.PURPLE.getCOLOR() +
+        System.out.println(cc.PURPLE.getCOLOR() +
                 "SCANNER - End of thread.");
     }
+
+
     /**
      * 1) Récupérer les données du client (IP / Port / Contenu)
      * Stocker la première fois les informations du client
@@ -148,29 +158,30 @@ class UserHandler implements Runnable
      */
     private void deSerializeClientInformations()
     {
+        ObjectInputStream ois = null;
         try
         {
             // 1) Récupérer les données du client (IP / Port / Contenu)
             // Se mettre en attente READ --> Le client quand il se connecte doit nous envoyer sa serialisation
             System.out.println("Waiting for client informations...");
-            String received = dis.readUTF();
-            System.out.println("Client is sending informations...");
 
-            // Ré-initialiser le client si il existe déjà
+            // Réinitialiser le client s'il existe déjà
             this.client = null;
 
-            ObjectInputStream ois = new ObjectInputStream( socket.getInputStream() );
+            ois = new ObjectInputStream(socket.getInputStream());
             this.client = (Client) ois.readObject();
 
 
-            System.out.println( cc.PURPLE.getCOLOR() +
-                    "Client informations received !"+
-                    "\nClient Infos : "+ client.toString());
+            System.out.println(cc.PURPLE.getCOLOR() +
+                    "Client informations received !" +
+                    "\nClient Infos : " + client.toString());
 
+            String sendConfirmation = "Client_Received";
+            dos.writeUTF(sendConfirmation);
+            dos.flush();
 
-            dos.writeUTF("Client_Received");
-
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             System.err.println("SCANNER - setClientInformations 1 : On n'a pas pu récupérer les données du client lors de la connexion !");
             throw new RuntimeException(e);
@@ -185,8 +196,9 @@ class UserHandler implements Runnable
 
     /**
      * Envoyer la liste des clients connectés du scanner au client qui a demandé la liste
-     * @synchronized Tous les threads User Handler accèdent au même objet scannerUsersList
+     *
      * @throws IOException
+     * @synchronized Tous les threads User Handler accèdent au même objet scannerUsersList
      */
     public synchronized void sendUsersList()
     {
@@ -207,7 +219,7 @@ class UserHandler implements Runnable
         LinkedList<Client> clientsList = new LinkedList<Client>();
         for (UserHandler uh : userListToSend)
         {
-            clientsList.add( uh.getClient() );
+            clientsList.add(uh.getClient());
         }
 
         // 3) Serialiser la liste de clients (clientsList)
@@ -216,6 +228,8 @@ class UserHandler implements Runnable
         {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(clientsList);
+            oos.flush();
+            oos.close();
 
             // 4) Vérifier que le client a bien reçu la liste des clients connectés au scanner
             System.out.println("SCANNER - En attente de la réponse du client...");
@@ -223,16 +237,17 @@ class UserHandler implements Runnable
 
             if (confirmation.equals("listReceived"))
             {
-                System.out.println( cc.PURPLE.getCOLOR() +
+                System.out.println(cc.PURPLE.getCOLOR() +
                         "SCANNER - Client has received the list of connected users !");
             }
             else
             {
-                System.out.println( cc.PURPLE.getCOLOR() +
+                System.out.println(cc.PURPLE.getCOLOR() +
                         "SCANNER - Client has NOT received the list of connected users !");
             }
 
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             System.err.println("SCANNER - sendUsersList 1 : On n'a pas pu envoyer la liste des 'clients connectés au scanner' au client !");
             throw new RuntimeException(e);

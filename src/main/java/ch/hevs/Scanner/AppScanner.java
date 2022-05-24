@@ -27,6 +27,29 @@ public class AppScanner
     private static ServerSocket server;
     private static Socket socket;
 
+    /**
+     * Initiliser le Scanner avant de le lancer
+     *
+     * @throws IOException
+     */
+    private static void initScanner()
+    {
+        // Configuration des dossiers du USER
+        Config.getConfig();
+
+        isRunning = true;
+        connectedUsers = new LinkedList<UserHandler>();
+
+        // Création d'un serveur qui écoute sur le port 45000
+        try
+        {
+            server = new ServerSocket(PORT_DU_SERVEUR);
+        } catch (IOException e)
+        {
+            System.err.println("SCANNER : Impossible de créer un serveur sur le port " + PORT_DU_SERVEUR);
+            throw new RuntimeException(e);
+        }
+    }
 
     // M A I N
     /**
@@ -77,30 +100,6 @@ public class AppScanner
 
     // M E T H O D E S
     /**
-     * Initiliser le Scanner avant de le lancer
-     *
-     * @throws IOException
-     */
-    private static void initScanner()
-    {
-        // Configuration des dossiers du USER
-        Config.getConfig();
-
-        isRunning = true;
-        connectedUsers = new LinkedList<UserHandler>();
-
-        // Création d'un serveur qui écoute sur le port 45000
-        try
-        {
-            server = new ServerSocket(PORT_DU_SERVEUR);
-        } catch (IOException e)
-        {
-            System.err.println("SCANNER : Impossible de créer un serveur sur le port " + PORT_DU_SERVEUR);
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      *  Se mettre en attente & écoute, pour avoir des clients
      *  Quand un client se connecte, l'enregistrer dans une linked list, avec son IP et son contenu (liste des fichiers)
      * @author Elias
@@ -121,9 +120,7 @@ public class AppScanner
             //InputStream is = socket.getInputStream(); // TODO : Donner ceci au constructeur de UserHandler, et créer les buffer dans UserHandler
             DataInputStream  dis = new DataInputStream ( socket.getInputStream()  );
             DataOutputStream dos = new DataOutputStream( socket.getOutputStream() );
-
-
-            System.out.println("\t Assigning new thread for this client");
+            System.out.println("Assigning new thread for this client");
 
             // create a new thread object
             UserHandler uh = new UserHandler(socket, dis, dos, connectedUsers);
