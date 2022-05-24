@@ -229,7 +229,7 @@ class UserHandler implements Runnable
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(clientsList);
             oos.flush();
-            oos.close();
+
 
             // 4) Vérifier que le client a bien reçu la liste des clients connectés au scanner
             System.out.println("SCANNER - En attente de la réponse du client...");

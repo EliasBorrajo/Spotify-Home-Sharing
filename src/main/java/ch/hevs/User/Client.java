@@ -350,7 +350,7 @@ public class Client implements Runnable, Serializable
             System.out.println("Waiting for clients list...");
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             usersConnectedToScanner = (LinkedList<Client>) ois.readObject();
-            ois.close();
+
 
             System.out.println("Received clients list !");
             // Envoyer la onfirmation de reception de la liste
