@@ -3,6 +3,7 @@ package ch.hevs.User;
 
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
+import ch.hevs.ToolBox.SleepTimerConverter.Converter;
 
 import java.io.*;
 import java.net.Socket;
@@ -307,6 +308,7 @@ public class Client implements Runnable, Serializable
             System.out.println("Received clients list !");
             // Envoyer la onfirmation de reception de la liste
             dos.writeUTF("listReceived");
+
 
             return usersConnectedToScanner;
 
