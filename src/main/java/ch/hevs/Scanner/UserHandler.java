@@ -114,6 +114,7 @@ class UserHandler implements Runnable
                         System.out.println("Client " + this.socket + " sends exit...");
                         System.out.println("Closing this connection.");
                         isRunning = false;
+                        removeUserFromList();
                         this.socket.close();
                         System.out.println("Connection closed");
                         break;
@@ -127,10 +128,12 @@ class UserHandler implements Runnable
             {
                 System.out.println("User logout from scanner");
                 isRunning = false;
+                removeUserFromList();
 
                 System.err.println("SCANNER - run 1 : Switch Case I/O Exception !");
                 throw new RuntimeException(e);
             }
+
         }
 
         // 3) Fin du thread
@@ -148,6 +151,24 @@ class UserHandler implements Runnable
 
         System.out.println(cc.PURPLE.getCOLOR() +
                 "SCANNER - End of thread.");
+    }
+
+    private synchronized void removeUserFromList()
+    {
+        // La liste est synchronised --> En faire une copie,
+        // trouver ou se trouve le user à supprimer, puis le supprimer dans la vraie liste
+        LinkedList<UserHandler> tempList = (LinkedList<UserHandler>) scannerUsersList.clone();
+        //int locationInList = -1;
+        for (int i = 0; i < tempList.size(); i++)
+        {
+            // Trouverl'index de l'IP du user que je possède dans la liste temp
+            if (this.client.getUserIp().equals(tempList.get(i).client.getUserIp()))
+            {
+                scannerUsersList.remove(i);
+                System.out.println("User " + this.client.getUserIp() + " removed from the list");
+                break;
+            }
+        }
     }
 
 

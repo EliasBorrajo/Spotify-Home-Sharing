@@ -205,7 +205,21 @@
                 System    : Path to the JAR should be provided manually using <systemPath>
             -->
         </dependency>
-
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>19-ea+5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>19-ea+5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>19-ea+5</version>
+        </dependency>
     </dependencies>
 
 </project>

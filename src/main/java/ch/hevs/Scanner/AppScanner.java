@@ -117,7 +117,6 @@ public class AppScanner
             // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
 
             // obtaining input and out streams
-            //InputStream is = socket.getInputStream(); // TODO : Donner ceci au constructeur de UserHandler, et créer les buffer dans UserHandler
             DataInputStream  dis = new DataInputStream ( socket.getInputStream()  );
             DataOutputStream dos = new DataOutputStream( socket.getOutputStream() );
             System.out.println("Assigning new thread for this client");

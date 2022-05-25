@@ -4,6 +4,7 @@ package ch.hevs.User;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.ToolBox.SleepTimerConverter.Converter;
+import javafx.scene.media.MediaPlayer;
 
 import java.io.*;
 import java.net.Socket;
@@ -196,6 +197,13 @@ public class Client implements Runnable, Serializable
 
                     // Option permettant au client de jouer une musique
                     case 2:
+                        // 1) on se connecte au serveur d'un client
+                        // 2) On envoie au serveur la commande de lecture d'une musique
+                        // 3) on crée un nouveau thread MAIN pour lire la musique
+                        System.out.println("Connecting to another user...");
+                        connectToServer();
+                        requestToSend = "playMusic"; 
+                        selectSongToPlay(requestToSend);
                         break;
 
                     // Option permettant au client de MAJ sa liste de musiques disponibles sur son PC
@@ -255,6 +263,15 @@ public class Client implements Runnable, Serializable
         }
     }
 
+    private void selectSongToPlay(String requestToSend)
+    {
+
+    }
+
+    private void connectToServer()
+    {
+    }
+
     /**
      * Cette méthode permet d'envoyer un objet client sérialisé au scanner
      */
@@ -267,7 +284,6 @@ public class Client implements Runnable, Serializable
             // Tentative d'envoie de l'objet client au scanner
             oos.writeObject(this);
             oos.flush();
-
 
             System.out.println("Client sent to scanner !");
 
@@ -317,6 +333,7 @@ public class Client implements Runnable, Serializable
         LinkedList<Client> usersConnectedToScanner = getListOfServersFromScanner(requestToSend);
 
         // 3) Afficher la liste de serveurs disponibles
+        System.out.println("-------------------------------------------------------");
         int cpt_Users = 0;
         for (Client client : usersConnectedToScanner)
         {
@@ -467,5 +484,10 @@ public class Client implements Runnable, Serializable
                 ", serverPort=" + serverPort +
                 ", musicList=" + musicList +
                 '}';
+    }
+
+    public String getUserIp()
+    {
+        return userIp;
     }
 }
