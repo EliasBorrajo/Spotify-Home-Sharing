@@ -378,6 +378,7 @@ public class Client implements Runnable, Serializable
 
             // 8) Quitter le thread de lecture de la musique
             System.out.println("End of playing a music ! back to menu...");
+            p2pSocket.close();
 
         }
         catch (IOException e)

@@ -47,7 +47,7 @@ public class AppUser
 
         // User aura 2 threads, un thread pour le client, l'autre pour le serveur
         Client client = new Client("127.0.0.1", PORT_DU_SERVEUR, musicList );
-        Server server = new Server();
+        Server server = new Server( PORT_DU_SERVEUR,musicList);
 
         Thread clientThread = new Thread(client);
         Thread serverThread = new Thread(server);
