@@ -24,8 +24,9 @@ public class Server implements Runnable
     public Server(int portDuServeur, ArrayList<Musique> musicList)
     {
         cc = ConsoleColors.YELLOW;
-        listeDeMusiques = musicList;
+        this.listeDeMusiques = musicList;
         this.PORT_DU_SERVEUR = portDuServeur;
+        this.isRunning = true;
 
         try
         {

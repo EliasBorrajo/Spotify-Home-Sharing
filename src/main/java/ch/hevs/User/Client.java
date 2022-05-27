@@ -218,7 +218,7 @@ public class Client implements Runnable, Serializable
                         }
                         else
                         {
-                            System.out.println("Connection to user failed !");
+                            System.err.println("Connection to user failed !");
                         }
                         break;
 
@@ -378,7 +378,7 @@ public class Client implements Runnable, Serializable
 
             // 8) Quitter le thread de lecture de la musique
             System.out.println("End of playing a music ! back to menu...");
-            p2pSocket.close();
+            //p2pSocket.close(); // TODO ???
 
         }
         catch (IOException e)
@@ -401,6 +401,7 @@ public class Client implements Runnable, Serializable
 
     private boolean connectToServer()
     {
+        boolean isConnected = false;
         System.out.println("Connexion au serveur d'un autre user, entrez ses informations : ");
         System.out.println("Entrez l'adresse IP du Client  : ");
         Scanner scan = new Scanner(System.in);
@@ -416,7 +417,8 @@ public class Client implements Runnable, Serializable
             p2pDis = new DataInputStream(p2pSocket.getInputStream());
             p2pDos = new DataOutputStream(p2pSocket.getOutputStream());
 
-            return true;
+            isConnected = true;
+            return isConnected;
         }
         catch (UnknownHostException e)
         {
@@ -430,18 +432,21 @@ public class Client implements Runnable, Serializable
         }
         finally
         {
-            try
+            /*try
             {
                 p2pSocket.close();
             }
             catch (IOException e)
             {
                 throw new RuntimeException(e);
-            }
+            }*/
 
+            System.out.println("TEST 3");
             // Si on a pas réussi à se connecter au serveur, on skip le RETURN TRUE, et on envoie le false
-            return false;
+            //return isConnected;
+
         }
+
     }
 
     /**
