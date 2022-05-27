@@ -6,8 +6,12 @@ import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.ToolBox.SleepTimerConverter.Converter;
 import javafx.scene.media.MediaPlayer;
 
+import javax.sound.midi.Soundbank;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,6 +33,12 @@ public class Client implements Runnable, Serializable
     private transient boolean isConnected;
     private transient boolean isRunning;
     private transient ConsoleColors consoleColors;
+
+    // Attributs pour la connection à un autre user
+    private transient Socket p2pSocket;
+    private transient DataInputStream p2pDis;
+    private transient DataOutputStream p2pDos;
+
 
     // C O N S T R U C T E U R
     public Client(String userIP, int serverPort, ArrayList<Musique> musicList)
@@ -201,9 +211,15 @@ public class Client implements Runnable, Serializable
                         // 2) On envoie au serveur la commande de lecture d'une musique
                         // 3) on crée un nouveau thread MAIN pour lire la musique
                         System.out.println("Connecting to another user...");
-                        connectToServer();
-                        requestToSend = "playMusic"; 
-                        selectSongToPlay(requestToSend);
+                        if (connectToServer())
+                        {
+                            requestToSend = "playMusic";
+                            selectSongToPlay(requestToSend);
+                        }
+                        else
+                        {
+                            System.out.println("Connection to user failed !");
+                        }
                         break;
 
                     // Option permettant au client de MAJ sa liste de musiques disponibles sur son PC
@@ -266,10 +282,165 @@ public class Client implements Runnable, Serializable
     private void selectSongToPlay(String requestToSend)
     {
 
+        try
+        {
+            // 1) Envoyer la requete au serveur --> Lancer une musique
+            p2pDos.writeUTF(requestToSend);
+            p2pDos.flush();
+            boolean isPlaying = true;
+            boolean isSongFound = false;
+
+            do
+            {
+                // 2) donner la musique à jouer au serveur
+                System.out.println("Selectionnez le titre de la musique à jouer : ");
+                System.out.println("Pour quitter vers le menu, tapez 'EXIT'");
+                Scanner scan = new Scanner(System.in);
+                String songToPlay = scan.nextLine();
+
+                if (songToPlay.equals("EXIT"))
+                {
+                    System.out.println("Vous allez vous déconnecter du serveur, retour au menu principal...");
+                    isSongFound = false;
+                    isPlaying = false;
+                    p2pSocket.close();
+                    return; // On quitte la fonction
+                }
+
+                // 3) Envoyer le nom de la musique au serveur,
+                // attendre la réponse pour vérifier que il ait bien encore la musique disponible
+                p2pDos.writeUTF(songToPlay);
+                p2pDos.flush();
+
+                // 4) Si la musique est disponible, lancer le thread de lecture de la musique
+                String serverMusicSearchResponse = p2pDis.readUTF();
+                if (serverMusicSearchResponse.equals("SongFound"))
+                {
+                    isSongFound = true;
+                }
+                else // 5) Sinon, afficher un message d'erreur
+                {
+                    System.out.println("La musique n'est pas disponible, veuillez en choisir une autre...");
+                    isSongFound = false;
+                }
+
+            }while (isSongFound == false);
+
+            // 6) Si la musique est disponible, lancer le thread de lecture de la musique
+
+            // Envoyer la connection au AudioPlayer dans son thread pour reçevoir la musique en streaming et la jouer
+            // On commande le thread depuis ici.
+            // Ici on envoie les commandes au serveur, le serveur envoie les informations à AudioPlayer
+            InputStream is = new BufferedInputStream( p2pSocket.getInputStream() );
+            AudioPlayer audioPlayer = new AudioPlayer(is);
+
+            Thread musicThread = new Thread(audioPlayer);
+            musicThread.start();
+
+            // 7) Boucle de commande de lecture de la musique PLAY PAUSE STOP
+
+            do
+            {
+                System.out.println("Que voulez-vous faire ? (PLAY, PAUSE, STOP)");
+                Scanner scan = new Scanner(System.in);
+                String command = scan.nextLine();
+
+                switch (command)
+                {
+                    case "PLAY":
+                        System.out.println("Playing...");
+                        p2pDos.writeUTF(command);
+                        p2pDos.flush();
+                        audioPlayer.play();
+                        break;
+
+                    case "PAUSE":
+                        System.out.println("Paused...");
+                        p2pDos.writeUTF(command);
+                        p2pDos.flush();
+                        audioPlayer.pause();
+                        break;
+
+                    case "STOP":
+                        System.out.println("Stopped...");
+                        p2pDos.writeUTF(command);
+                        p2pDos.flush();
+                        audioPlayer.pause();
+                        isPlaying = false;
+                        break;
+
+                    default:
+                        System.out.println("Invalid command, please try again...");
+                        break;
+                }
+
+            } while (isPlaying == true);
+
+            // 8) Quitter le thread de lecture de la musique
+            System.out.println("End of playing a music ! back to menu...");
+
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (UnsupportedAudioFileException e)
+        {
+            System.out.println("Unsupported audio file");
+            System.out.println("Audio Player could not play the song");
+            throw new RuntimeException(e);
+        }
+        catch (LineUnavailableException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
-    private void connectToServer()
+    private boolean connectToServer()
     {
+        System.out.println("Connexion au serveur d'un autre user, entrez ses informations : ");
+        System.out.println("Entrez l'adresse IP du Client  : ");
+        Scanner scan = new Scanner(System.in);
+        String serverIp = scan.nextLine();
+
+        System.out.println("Entrez le port du Client  : ");
+        int serverPort = scan.nextInt();
+
+        try
+        {
+            p2pSocket = new Socket(serverIp, serverPort);
+            System.out.println("Connexion au serveur du User Réussie !");
+            p2pDis = new DataInputStream(p2pSocket.getInputStream());
+            p2pDos = new DataOutputStream(p2pSocket.getOutputStream());
+
+            return true;
+        }
+        catch (UnknownHostException e)
+        {
+            System.err.println("Aucun serveur trouvé avec ces informations, retour au menu, veuillez réessayer");
+            throw new RuntimeException(e);
+        }
+        catch (IOException e)
+        {
+            System.err.println("Impossible de se connecter au serveur, veuillez réessayer");
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            try
+            {
+                p2pSocket.close();
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+
+            // Si on a pas réussi à se connecter au serveur, on skip le RETURN TRUE, et on envoie le false
+            return false;
+        }
     }
 
     /**
