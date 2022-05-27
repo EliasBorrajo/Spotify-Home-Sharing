@@ -43,6 +43,7 @@ public class AudioPlayer implements Runnable
         clip.start();
 
         status = "play";
+        System.out.println("AUDIO PLAYER : Play");
     }
 
     // Method to pause the audio
@@ -50,12 +51,13 @@ public class AudioPlayer implements Runnable
     {
         if (status.equals("paused"))
         {
-            System.out.println("audio is already paused");
+            System.out.println("AUDIO PLAYER : Audio is already paused");
             return;
         }
         this.currentFrame = this.clip.getMicrosecondPosition();
         clip.stop();
         status = "paused";
+        System.out.println("AUDIO PLAYER : Pause");
     }
 
     // Method to reset audio stream
@@ -71,6 +73,6 @@ public class AudioPlayer implements Runnable
     @Override
     public void run()
     {
-        System.out.println("Audio Player is running...");
+        System.out.println("AUDIO PLAYER : is running...");
     }
 }

@@ -307,6 +307,7 @@ public class Client implements Runnable, Serializable
                     return; // On quitte la fonction
                 }
 
+                System.out.println("TEST : " + songToPlay);
                 // 3) Envoyer le nom de la musique au serveur,
                 // attendre la réponse pour vérifier que il ait bien encore la musique disponible
                 p2pDos.writeUTF(songToPlay);
@@ -316,6 +317,7 @@ public class Client implements Runnable, Serializable
                 String serverMusicSearchResponse = p2pDis.readUTF();
                 if (serverMusicSearchResponse.equals("SongFound"))
                 {
+                    System.out.println("Musique trouvée, lancement du thread de lecture...");
                     isSongFound = true;
                 }
                 else // 5) Sinon, afficher un message d'erreur
@@ -336,6 +338,7 @@ public class Client implements Runnable, Serializable
 
             Thread musicThread = new Thread(audioPlayer);
             musicThread.start();
+            audioPlayer.play();
 
             // 7) Boucle de commande de lecture de la musique PLAY PAUSE STOP
 
@@ -423,12 +426,12 @@ public class Client implements Runnable, Serializable
         catch (UnknownHostException e)
         {
             System.err.println("Aucun serveur trouvé avec ces informations, retour au menu, veuillez réessayer");
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
         }
         catch (IOException e)
         {
             System.err.println("Impossible de se connecter au serveur, veuillez réessayer");
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
         }
         finally
         {
@@ -447,6 +450,7 @@ public class Client implements Runnable, Serializable
 
         }
 
+        return isConnected;
     }
 
     /**

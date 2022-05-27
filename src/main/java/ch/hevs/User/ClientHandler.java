@@ -58,7 +58,7 @@ class ClientHandler implements Runnable
                 do
                 {
                     System.out.println(cc.YELLOW.getCOLOR() +
-                            "SERVER - Waiting for client requests...");
+                            "SERVER - Waiting for client request...");
 
 
                     // Se mettre en écoute des requetes du client
@@ -70,7 +70,6 @@ class ClientHandler implements Runnable
                     //      Si elle existe, je lui envoie une confirmation WRITE,
                     //      sinon je lui envoie une erreur
                     ArrayList<Musique> listeDeMusiques = getMyUserMusicList();
-                    System.out.println("Recherche de la musique : " + received);
 
                     for (Musique musique : listeDeMusiques)
                     {
@@ -87,7 +86,18 @@ class ClientHandler implements Runnable
                             break;
                         }
                         // Si on arrive à la fin de la liste, et que on n'a pas trouvé de fichier avec un tel nom
-                        else if ( (listeDeMusiques.size() - listeDeMusiques.indexOf(musique)) == 0)
+                        else if(   musique.getMusicFileName().equals(listeDeMusiques.get(listeDeMusiques.size()-1).getMusicFileName())   )
+                        {
+                            // On envoie une erreur au client et on brise la boucle
+                            sending = "SongNotFound";
+                            System.out.println("Song Not Found");
+                            dos.writeUTF(sending);
+                            dos.flush();
+                            songIsFound = false;
+                            break;
+                        }
+                        /*
+                        else if ( (listeDeMusiques.size() - listeDeMusiques.indexOf(musique)) == 1)
                         {
                             // autrement rien n'a été trouvé, on envoie une erreur
                             System.out.println("Song not found");
@@ -95,7 +105,7 @@ class ClientHandler implements Runnable
                             dos.writeUTF(sending);
                             dos.flush();
                             songIsFound = false;
-                        }
+                        }*/
                     }
                 }while (songIsFound == false);
 
@@ -121,25 +131,26 @@ class ClientHandler implements Runnable
         catch (IOException e)
         {
             System.err.println("Clienthandler : Erreur de lecture du flux de données");
-            throw new RuntimeException(e);
+            System.err.println("Or client did EXIT properly");
+            //throw new RuntimeException(e);
         }
 
 
         // 3) Fin du thread
         try
         {
-            System.out.println(cc.PURPLE.getCOLOR() +
-                    "SCANNER - Closing this connection.");
+            System.out.println(cc.YELLOW.getCOLOR() +
+                    "SERVEUR - Closing this connection.");
             this.socket.close();
         }
         catch (IOException e)
         {
-            System.err.println("SCANNER - run 2 : On n'a pas pu fermer la connexion !");
+            System.err.println("SERVEUR - run 2 : On n'a pas pu fermer la connexion !");
             throw new RuntimeException(e);
         }
 
-        System.out.println(cc.PURPLE.getCOLOR() +
-                "SCANNER - End of thread.");
+        System.out.println(cc.YELLOW.getCOLOR() +
+                "SERVEUR - End of thread.");
     }
 
     // M E T H O D E S
