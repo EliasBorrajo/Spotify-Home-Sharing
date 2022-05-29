@@ -271,13 +271,18 @@ public class Client implements Runnable, Serializable
             dos.close();
             socket.close();
             isConnected = false;
-            System.exit(0); // On quitte l'application CLIENT sans erreur
+
         }
         catch (IOException e)
         {
             System.err.println("CLIENT - RUN 1 : Could not close the socket before leaving and ending this thread.");
             throw new RuntimeException(e);
         }
+        finally
+        {
+            System.exit(0); // On quitte l'application CLIENT sans erreur
+        }
+
     }
 
     private void selectSongToPlay(String requestToSend)
