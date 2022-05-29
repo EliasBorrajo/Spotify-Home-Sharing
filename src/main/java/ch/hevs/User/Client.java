@@ -271,6 +271,7 @@ public class Client implements Runnable, Serializable
             dos.close();
             socket.close();
             isConnected = false;
+            System.exit(0); // On quitte l'application CLIENT sans erreur
         }
         catch (IOException e)
         {
