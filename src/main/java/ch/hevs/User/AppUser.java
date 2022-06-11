@@ -36,17 +36,24 @@ public class AppUser
         //USER_IP = //TODO : Faire INET address vu au debout des cours, come ça on a notre propre IP !
         // Le user doit choisir entre ses 2 aresses IP wn WLAN ou LAN
 
+        String myIP = "";
         try
         {
             Enumeration<NetworkInterface> allni = NetworkInterface.getNetworkInterfaces();
 
+            myIP = allni.nextElement().getInetAddresses().nextElement().getHostAddress();
+            System.out.println("TEST : " + myIP);
         } catch (SocketException e)
         {
+            myIP = "127.0.0.1";
             throw new RuntimeException(e);
         }
+        myIP = "127.0.0.1";
+
 
         // User aura 2 threads, un thread pour le client, l'autre pour le serveur
-        Client client = new Client("127.0.0.1", PORT_DU_SERVEUR, musicList );
+        Client client = new Client(myIP, PORT_DU_SERVEUR, musicList );
+        //Client client = new Client("127.0.0.1", PORT_DU_SERVEUR, musicList );
         Server server = new Server( PORT_DU_SERVEUR,musicList);
 
         Thread clientThread = new Thread(client);
