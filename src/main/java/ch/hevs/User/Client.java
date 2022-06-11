@@ -76,6 +76,8 @@ public class Client implements Runnable, Serializable
             {
                 connectToScanner(scannerIP, scannerPort); // TODO : Cette ligne à decommenter pour la version finale
                 //connectToScanner("127.0.0.1", 45000);
+                userIp = socket.getInetAddress().getHostAddress();
+                System.out.println("MY TRUE FINAL FORM IP : " + userIp);
             }
             catch (Exception e)
             {
@@ -332,6 +334,7 @@ public class Client implements Runnable, Serializable
                     isSongFound = false;
                 }
 
+                System.out.println("TEST 1");
             }while (isSongFound == false);
 
             // 6) Si la musique est disponible, lancer le thread de lecture de la musique
@@ -339,10 +342,14 @@ public class Client implements Runnable, Serializable
             // Envoyer la connection au AudioPlayer dans son thread pour reçevoir la musique en streaming et la jouer
             // On commande le thread depuis ici.
             // Ici on envoie les commandes au serveur, le serveur envoie les informations à AudioPlayer
+            System.out.println("TEST 2");
             InputStream is = new BufferedInputStream( p2pSocket.getInputStream() );
+            System.out.println("TEST 3");
             AudioPlayer audioPlayer = new AudioPlayer(is);
 
+            System.out.println("TEST 4");
             Thread musicThread = new Thread(audioPlayer);
+            System.out.println("TEST 5");
             musicThread.start();
             audioPlayer.play();
 

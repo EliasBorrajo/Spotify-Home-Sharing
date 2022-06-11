@@ -113,6 +113,7 @@ class ClientHandler implements Runnable
                 // 2) Lire le fichier de la musique sur le PC
                 // préparer dans la mémoire une zone dans laquelle on va mettre tout le fichier dedans
                 byte[] musicBuffer = new byte[ (int) selectedMusic.getMusicFileSize() ];
+                System.out.println("FILE SIZE = " + musicBuffer.length);
                 Path musicPath = Paths.get(Config.getConfig().getPathUpload().toString(), selectedMusic.getMusicFileName());
                 BufferedInputStream bis = new BufferedInputStream( new FileInputStream( String.valueOf(musicPath) ));
 
