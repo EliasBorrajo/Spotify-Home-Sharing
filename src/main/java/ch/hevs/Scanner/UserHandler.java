@@ -1,14 +1,19 @@
 package ch.hevs.Scanner;
 
+import Logs.Formater;
+import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Client;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 // ClientHandler class
 class UserHandler implements Runnable
@@ -28,6 +33,7 @@ class UserHandler implements Runnable
     private boolean isRunning;
     private Client client;
     private LinkedList<UserHandler> scannerUsersList;
+    private FileHandler fh;
 
     private ConsoleColors cc;
 
@@ -115,7 +121,9 @@ class UserHandler implements Runnable
                         System.out.println("Closing this connection.");
                         isRunning = false;
                         removeUserFromList();
+
                         this.socket.close();
+
                         System.out.println("Connection closed");
                         break;
 

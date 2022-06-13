@@ -34,13 +34,17 @@ public class Config
     // All personal files in JSON format will be stored in this folder
     private File uploadFolder;
     private File downloadFolder;
-
-    private String configFilePath;
+    private File logsFolder;
     private String envVarStorePath;                       // Is the value contained in the environment variable. We return it to the getters.
     private Path pathUpload;
     private Path pathDownload;
+    private Path pathLogs;
     private static final String VARIABLE_ENVIRONNEMENT = "VSSPOTIFY"; // Name of the Variable on the PC
-
+    /**********************************
+     * LOGS
+     *********************************/
+    String logsFileName = "logs";
+    String logsFileNameExtension = logsFileName + ".txt";
 
     //*****************************************************************************
     // C O N S T R U C T O R - PRIVATE SINGLETON
@@ -104,7 +108,30 @@ public class Config
             }
         }
 
+        // 4) CREER LE DOSSIER DE LOGS DE L'UTILISATEUR
+        pathLogs = Paths.get(envVarStorePath, "logs");
+        logsFolder = new File(String.valueOf(  pathLogs  ));  // Créer le chemin du dossier de logs
 
+        if (!logsFolder.isDirectory())
+        {
+            // Did the creation of the folder work?
+            if (!logsFolder.mkdir()) //Crée le folder, et retourne TRUE si il a réussi
+            {
+                System.err.println("Folder creation LOGS did not work");
+                System.exit(1); // We BRUTALLY quit the app.
+            }
+        }
+
+        /**********************************
+         * LOGS
+         *********************************/
+        // 5) CREER LE FICHIER LOGS.TXT DE L'UTILISATEUR
+        File logsFile = new File(logsFolder, logsFileNameExtension);
+        try {
+            logsFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // If I arrive here, it is because my file could be created correctly and it EXISTS!
         //System.out.println("DIRECTORY NAME AS : " + storeFile.getName()
@@ -146,5 +173,8 @@ public class Config
     {
         return pathDownload;
     }
+
+    public Path getPathLogs() { return pathLogs; }
+
 }
 

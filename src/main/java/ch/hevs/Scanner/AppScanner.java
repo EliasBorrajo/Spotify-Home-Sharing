@@ -1,5 +1,7 @@
 package ch.hevs.Scanner;
 
+import Logs.Formater;
+import Logs.Log;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Server;
@@ -7,7 +9,11 @@ import ch.hevs.User.Server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Elias
@@ -26,6 +32,10 @@ public class AppScanner
 
     private static ServerSocket server;
     private static Socket socket;
+    /*****************************
+     * LOG
+     ****************************/
+    static Log log = new Log();
 
     /**
      * Initiliser le Scanner avant de le lancer
@@ -113,6 +123,15 @@ public class AppScanner
             // socket object to receive incoming client requests
             socket = server.accept();
 
+            /****************************
+             * LOGS
+             ***************************/
+
+            log.myLogger.info("Client " + socket.getInetAddress() + " is connected to the server on port " + socket.getPort());
+
+
+
+
             System.out.println("Un nouveau client s'est connecté : " + socket);
             // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
 
@@ -131,8 +150,7 @@ public class AppScanner
             // Invoking the start() method
             t.start();
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             System.err.println( "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client");
             // Si le socket existe, essaye de le fermer
             try
