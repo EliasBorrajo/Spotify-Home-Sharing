@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import static ch.hevs.User.AppUser.log;
+
 
 /**
  * Le serveur est un thread qui attend les clients qui se connectent.
@@ -109,8 +111,7 @@ public class Server implements Runnable
             // socket object to receive incoming client requests
             socket = listeningSocket.accept();
 
-            System.out.println("Un nouveau client s'est connecté : " + socket);
-            // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
+            log.myLogger.info("Client " + socket.getInetAddress() + " is connected to the server on port " + socket);
 
             // obtaining input and out streams
             DataInputStream dis = new DataInputStream ( socket.getInputStream()  );

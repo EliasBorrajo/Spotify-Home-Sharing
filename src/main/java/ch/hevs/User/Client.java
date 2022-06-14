@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import static ch.hevs.User.AppUser.log;
+
 /**
  * la classe client sert d'interface graphique en console pour le user.
  * - Role : Se connecter au Scanner du réseau,
