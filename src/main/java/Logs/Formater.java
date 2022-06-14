@@ -3,6 +3,9 @@ import java.util.Date;
 import java.util.logging.*;
 import java.io.*;
 
+/**
+ * @author Arthur Avez
+ */
 public class Formater {
 
     //extend the current Formatter

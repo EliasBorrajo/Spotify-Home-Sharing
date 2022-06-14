@@ -1,7 +1,5 @@
 package ch.hevs.User;
 
-
-
 import ch.hevs.Configurations.Config;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -13,9 +11,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-// La classe implémente l'extension Runnable et Serializable
-
 /**
+ * la classe client sert d'interface graphique en console pour le user.
+ * - Role : Se connecter au Scanner du réseau,
+ *          Envoyer mes informations de clients au scanner du réseau,
+ *          Récuperer la liste de tous les clients du réseau,
+ *          Lancer une musique en streaming à partir du serveur d'un autre user.
+ *          Contrôler les commandes PLAY PAUSE STOP de la musique.
+ *          Se déconnecter du Scanner du réseau.
+ *
+ * Implémente la classe Runnable pour pouvoir être lancé depuis AppUser.
+ * Implémente la classe Serializable pour pouvoir être envoyé au Scanner du réseau en tant qu'objet via un stream.
+ * @transient Tous les attibuts qui ne doivent pas être sérialisés.
  * @author Elias Borrajo & Arthur Avez
  */
 public class Client implements Runnable, Serializable
@@ -33,7 +40,6 @@ public class Client implements Runnable, Serializable
     private transient boolean isConnected;
     private transient boolean isRunning;
 
-
     // Attributs pour la connection à un autre user
     private transient Socket p2pSocket;
     private transient DataInputStream p2pDis;
@@ -41,6 +47,12 @@ public class Client implements Runnable, Serializable
 
 
     // C O N S T R U C T E U R
+    /**
+     * Constructeur de la classe Client
+     * @param userIP : l'adresse IP du user, va être redéfinie plus loin dès que on se sera connecté au Scanner du réseau.
+     * @param serverPort : le port de notre serveur. On le stocke ici, car sera serialisé et envoyé au scanner du réseau.
+     * @param musicList : la liste de toutes les musiques disponibles sur mon serveur.
+     */
     public Client(String userIP, int serverPort, ArrayList<Musique> musicList)
     {
         this.userIp = userIP;
@@ -49,13 +61,11 @@ public class Client implements Runnable, Serializable
 
         isConnected = false;
         isRunning = true;
-
     }
 
     // R U N N A B L E
-
     /**
-     * Cette méthode permet de lancer la connection d'un client à un serveur
+     * Permet de lancer le thread Client.
      */
     @Override
     public void run()
@@ -110,9 +120,12 @@ public class Client implements Runnable, Serializable
 
     // M E T H O D E S
     /**
-     * Cette méthode permet de lancer la connection d'un client à un serveur
+     * Cette méthode permet de lancer la connection d'un client à un serveur.
      *
-     * @return un tableau de String contenant l'adresse IP du serveur ainsi que son port
+     * @return un tableau de String contenant :
+     *         l'adresse IP du serveur en [0],
+     *         ainsi que son port en [1].
+     * @author Arthur Avez
      */
     public String[] getConnectionInformations()
     {
@@ -131,7 +144,17 @@ public class Client implements Runnable, Serializable
 
         // Création d'une variable int qui récupérera la prochaine saisie client dans la console
         System.out.println("Enter scanner port : ");
-        int serverPort = sc.nextInt();
+        int serverPort ;
+        // Tant que la saisie dans la console client est différente d'un int
+        while (!sc.hasNextInt()) // If not an int !
+        {
+            // Message d'erreur
+            System.err.println("Please enter a valid PORT number ! Try again...");
+            // Ecoute de la prochaine saisie console
+            sc.next();
+        }
+        serverPort = sc.nextInt();
+
         informations[1] = Integer.toString(serverPort);
 
         // Retour du tableau avec les infos remplies
@@ -167,7 +190,10 @@ public class Client implements Runnable, Serializable
     }
 
     /**
-     * Cette méthode permet d'afficher les différentes fonctionnalités de l'application au client
+     * INTERFACE GRAPHIQUE
+     * MENU DU CLIENT
+     * Cette méthode permet d'afficher les différentes fonctionnalités de l'application au client.
+     * @author Elias Borrajo
      */
     public void showMenuToClient()
     {
@@ -287,6 +313,10 @@ public class Client implements Runnable, Serializable
 
     }
 
+    /**
+     * Cette methode envoie une requete de la musique à jouer au serveur d'un client
+     * @param requestToSend : String que on doit donner en param de la methode, ce sera le nom de la musique à jouer
+     */
     private void selectSongToPlay(String requestToSend)
     {
 
@@ -415,6 +445,10 @@ public class Client implements Runnable, Serializable
 
     }
 
+    /**
+     * Permet de se connecter au serveur d'un autre utilisateur
+     * @return : boolean qui indique si la connexion a été effectuée ou non.
+     */
     private boolean connectToServer()
     {
         boolean isConnected = false;
@@ -424,7 +458,16 @@ public class Client implements Runnable, Serializable
         String serverIp = scan.nextLine();
 
         System.out.println("Entrez le port du Client  : ");
-        int serverPort = scan.nextInt();
+        int serverPort ;//= scan.nextInt();
+        // Tant que la saisie dans la console client est différente d'un int
+        while (!scan.hasNextInt()) // If not an int !
+        {
+            // Message d'erreur
+            System.err.println("Please enter a valid PORT number ! Try again...");
+            // Ecoute de la prochaine saisie console
+            scan.next();
+        }
+        serverPort = scan.nextInt();
 
         try
         {
@@ -519,7 +562,7 @@ public class Client implements Runnable, Serializable
 
 
     /**
-     * Cette méthode permet de montrer au client les différents serveurs connectés au scanner
+     * Cette méthode permet de montrer au client les différents users (et leurs informations de serveur) connectés au scanner
      */
     private void showServersFromScanner(String requestToSend)
     {
@@ -531,7 +574,7 @@ public class Client implements Runnable, Serializable
         int cpt_Users = 0;
         for (Client client : usersConnectedToScanner)
         {
-            System.out.println("Client : " + cpt_Users + " IP : " + client.userIp + " Port : " + client.serverPort);
+            System.out.println("Client : " + cpt_Users + " - IP : " + client.userIp + " -  Port : " + client.serverPort);
             cpt_Users++;
 
             int cpt_Musiques = 0;
@@ -555,9 +598,6 @@ public class Client implements Runnable, Serializable
 
         try
         {
-            //dos.writeUTF(requestToSend);
-            //dos.flush();
-
             System.out.println("Waiting for clients list...");
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             usersConnectedToScanner = (LinkedList<Client>) ois.readObject();
@@ -582,14 +622,9 @@ public class Client implements Runnable, Serializable
 
     }
 
-    // TODO : à terminer...
-    private void playSelectedMusic(String ip, int serverPort, String musicName)
-    {
-
-    }
-
     /**
-     * Cette méthode permet de se déconnecter du programme
+     * Cette méthode permet de se déconnecter du programme client
+     * @return : false si la déconnexion a été effectuée, true sinon (inversé car besoin plus loin dans le code)
      */
     private boolean logout()
     {
@@ -653,7 +688,7 @@ public class Client implements Runnable, Serializable
                 musicList.add(musique);
             }
         }
-        printListeDeMusiques();
+        printMaListeDeMusiques();
         // On retourne la liste d'objets musique
         return musicList;
     }
@@ -661,7 +696,7 @@ public class Client implements Runnable, Serializable
     /**
      * Affiche la liste de musiques que je mets à disposition dans mon dossier upload du PC
      */
-    public void printListeDeMusiques()
+    public void printMaListeDeMusiques()
     {
         // On affiche la liste des musiques
         for (Musique m : musicList)
@@ -670,6 +705,10 @@ public class Client implements Runnable, Serializable
         }
     }
 
+    /**
+     * Permet d'afficher les informations du client
+     * @return : les informations du client
+     */
     @Override
     public String toString()
     {
@@ -680,6 +719,10 @@ public class Client implements Runnable, Serializable
                 '}';
     }
 
+    /**
+     * Permet de GET l'IP du client
+     * @return : l'IP du client
+     */
     public String getUserIp()
     {
         return userIp;
