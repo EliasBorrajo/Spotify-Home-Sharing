@@ -31,6 +31,7 @@ public class AppUser
         // Configuration des dossiers du USER
         Config.getConfig();
 
+
         // User aura 2 threads, un thread pour le client, l'autre pour le serveur
         Client client = new Client(ip,  PORT_DU_SERVEUR, musicList);
         Server server = new Server(     PORT_DU_SERVEUR, musicList);
