@@ -44,7 +44,7 @@ public class AppScanner
 
         isRunning = true;
         connectedUsers = new LinkedList<UserHandler>();
-        log = new Log();
+        log = new Log("scannerLog");
 
         // Création d'un serveur qui écoute sur le port 45000
         try

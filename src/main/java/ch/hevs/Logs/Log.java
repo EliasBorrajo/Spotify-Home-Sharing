@@ -17,18 +17,23 @@ public class Log
     public Logger myLogger;
     // By month
     private LocalDate date = LocalDate.now();
-    private int year = date.getYear();
-    private String month = date.getMonth().toString();
-    private String filePath = Paths.get(Config.getConfig().getPathLogs().toString(), "logs" + month + year + ".log").toString();
+    private int year;
+    private String month;
+    private String filePath;
 
     // C O N S T R U C T E U R
     /**
      * Constructeur de la classe Log
      */
-    public Log()
+    public Log(String fileName)
     {
         // Get logger
         myLogger = Logger.getLogger("ch.hevs");
+
+        LocalDate date = LocalDate.now();
+        year  = date.getYear();
+        month = date.getMonth().toString();
+        filePath = Paths.get(Config.getConfig().getPathLogs().toString(), fileName + "_" + month + year + ".log").toString();
 
         try
         {

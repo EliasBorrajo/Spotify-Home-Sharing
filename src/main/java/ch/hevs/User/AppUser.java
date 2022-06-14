@@ -1,6 +1,8 @@
 package ch.hevs.User;
 
 import ch.hevs.Configurations.Config;
+import ch.hevs.Logs.Log;
+
 import java.util.ArrayList;
 
 
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 public class AppUser
 {
     // A T T R I B U T S
+    protected static Log log;
     private static boolean isRunningApp;
     private static ArrayList<Musique> musicList = new ArrayList<Musique>();
     private static final int PORT_DU_SERVEUR = 50000;
@@ -30,7 +33,7 @@ public class AppUser
     {
         // Configuration des dossiers du USER
         Config.getConfig();
-
+        log = new Log("userLog");
 
         // User aura 2 threads, un thread pour le client, l'autre pour le serveur
         Client client = new Client(ip,  PORT_DU_SERVEUR, musicList);
@@ -39,6 +42,7 @@ public class AppUser
         Thread clientThread = new Thread(client);
         Thread serverThread = new Thread(server);
 
+        log.myLogger.info("USER : Lancement du client");
 
         System.out.println("USER APPLICATION STARTED");
         System.out.println("Starting server thread");
