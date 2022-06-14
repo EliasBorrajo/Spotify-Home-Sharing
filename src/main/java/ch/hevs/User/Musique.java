@@ -33,7 +33,6 @@ public class Musique implements Serializable
     {
         return "Musique{" +
                 "fileName='" + musicFileName + '\'' +
-                ", fileSize=" + musicFileSize +
                 '}';
     }
 

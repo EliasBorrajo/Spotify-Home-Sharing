@@ -2,7 +2,6 @@ package ch.hevs.Logs;
 
 import java.util.Date;
 import java.util.logging.*;
-import java.io.*;
 
 /**
  * Classe permettant de formatter les logs avec notre propre FORMAT (date + heure + message)
@@ -10,7 +9,6 @@ import java.io.*;
  */
 public class Formater
 {
-    // TODO : Pourquoi classe dans classe ?
     //extend the current Formatter
     public static class SocketFormatter extends Formatter
     {

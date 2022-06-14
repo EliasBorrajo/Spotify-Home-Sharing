@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+
 /**
  * Le serveur est un thread qui attend les clients qui se connectent.
  * Il crée un thread pour chaque client qui se connecte.
@@ -40,7 +41,8 @@ public class Server implements Runnable
             listeningSocket = new ServerSocket(PORT_DU_SERVEUR);
         } catch (IOException e)
         {
-            System.err.println("SERVER : Impossible de créer un serveur sur le port " + portDuServeur);
+            String msg = "SERVER : Impossible de créer un serveur sur le port " + portDuServeur;
+            System.err.println(msg);
             throw new RuntimeException(e);
         }
     }

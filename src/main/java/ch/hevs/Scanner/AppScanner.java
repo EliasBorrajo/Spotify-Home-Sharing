@@ -31,7 +31,7 @@ public class AppScanner
 
     private static ServerSocket server;
     private static Socket socket;
-    protected static Log log = new Log();
+    protected static Log log;
 
     /**
      * Initiliser le Scanner avant de le lancer
@@ -44,6 +44,7 @@ public class AppScanner
 
         isRunning = true;
         connectedUsers = new LinkedList<UserHandler>();
+        log = new Log();
 
         // Création d'un serveur qui écoute sur le port 45000
         try
@@ -51,8 +52,11 @@ public class AppScanner
             server = new ServerSocket(PORT_DU_SERVEUR);
         } catch (IOException e)
         {
-            System.err.println("SCANNER : Impossible de créer un serveur sur le port " + PORT_DU_SERVEUR);
+            String msg = "SCANNER : Impossible de créer un serveur sur le port " + PORT_DU_SERVEUR;
+            log.myLogger.severe(msg + " : " + e.toString());
+            System.exit(1); // Arrêt du programme en cas d'erreur
             throw new RuntimeException(e);
+
         }
     }
 
@@ -96,9 +100,12 @@ public class AppScanner
 
         } catch (IOException e)
         {
-            System.err.println("Scanner - Init OR Listen : Error");
+            String msg = "Scanner - Init OR Listen : Error";
+            log.myLogger.warning(msg + " : " + e.toString());
             throw new RuntimeException(e);
         }
+
+        System.exit(0); // Arrêt du programme
     }
 
     // M E T H O D E S
@@ -115,9 +122,9 @@ public class AppScanner
         {
             // socket object to receive incoming client requests
             socket = server.accept();
-            log.myLogger.info("Client " + socket.getInetAddress() + " is connected to the server on port " + socket.getPort());
+            log.myLogger.info("Client " + socket.getInetAddress() + " is connected to the server on port " + socket);
 
-            System.out.println("Un nouveau client s'est connecté : " + socket);
+            //System.out.println("Un nouveau client s'est connecté : " + socket);
 
             // obtaining input and out streams
             DataInputStream  dis = new DataInputStream ( socket.getInputStream()  );
@@ -134,16 +141,18 @@ public class AppScanner
             // Invoking the start() method
             t.start();
 
-        } catch (Exception e) {
-            log.myLogger.warning("Failed to connect to the scanner : " + e);
-            System.err.println( "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client");
+        }
+        catch (Exception e)
+        {
+            String msg = "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client";
+            log.myLogger.severe(msg + " : " + e.toString());
             // Si le socket existe, essaye de le fermer
             try
             {
                 socket.close();
             } catch (IOException ex)
             {
-                log.myLogger.severe("Impossible to close socket connection : " + ex);
+                log.myLogger.severe("Impossible to close socket connection properly: " + ex.toString());
                 System.err.println("Socket non fermé, impossible de le fermer car non existant");
                 throw new RuntimeException(ex);
             }

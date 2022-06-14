@@ -1,7 +1,6 @@
 package ch.hevs.Logs;
 
 import ch.hevs.Configurations.Config;
-
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;

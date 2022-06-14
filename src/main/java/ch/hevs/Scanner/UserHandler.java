@@ -52,7 +52,7 @@ class UserHandler implements Runnable
         try
         {
             received = dis.readUTF();
-            System.out.println("Initialisation of the client : " + received);
+            //System.out.println("Initialisation of the client : " + received);
             deSerializeClientInformations();
         }
         catch (IOException e)
@@ -111,12 +111,12 @@ class UserHandler implements Runnable
             }
             catch (IOException e)
             {
-                log.myLogger.warning("Client " + client.getUserIp() + " forced to logout : " + e);
+                log.myLogger.severe("Client " + client.getUserIp() + " forced to logout : " + e);
                 System.out.println("Client forced to logout");
                 isRunning = false;
                 removeUserFromList();
-                System.err.println("SCANNER - run 1 : Switch Case I/O Exception !");
-                throw new RuntimeException(e);
+                System.err.println("SCANNER - run 1 : Switch Case has a I/O Exception !");
+
             }
 
         }
@@ -179,9 +179,8 @@ class UserHandler implements Runnable
             ois = new ObjectInputStream(socket.getInputStream());
             this.client = (Client) ois.readObject();
 
-
-            System.out.println("Client informations received !" +
-                    "\nClient Infos : " + client.toString());
+            System.out.println("Client informations received !");
+            log.myLogger.info("Client Infos : " + client.toString());
 
             String sendConfirmation = "Client_Received";
             dos.writeUTF(sendConfirmation);
@@ -190,12 +189,14 @@ class UserHandler implements Runnable
         }
         catch (IOException e)
         {
-            System.err.println("SCANNER - setClientInformations 1 : On n'a pas pu récupérer les données du client lors de la connexion !");
+            String msg ="SCANNER - setClientInformations 1 : On n'a pas pu récupérer les données du client lors de la connexion !";
+            log.myLogger.severe(msg + e.toString());
             throw new RuntimeException(e);
         }
         catch (ClassNotFoundException e)
         {
-            System.err.println("SCANNER - setClientInformations 2 : Dé-Serialisation impossible !");
+            String msg = "SCANNER - setClientInformations 2 : Dé-Serialisation impossible !";
+            log.myLogger.severe(msg + e.toString());
             throw new RuntimeException(e);
         }
     }
@@ -254,7 +255,8 @@ class UserHandler implements Runnable
         }
         catch (IOException e)
         {
-            System.err.println("SCANNER - sendUsersList 1 : On n'a pas pu envoyer la liste des 'clients connectés au scanner' au client !");
+            String msg = "SCANNER - sendUsersList 1 : On n'a pas pu envoyer la liste des 'clients connectés au scanner' au client !";
+            log.myLogger.severe(msg + e.toString());
             throw new RuntimeException(e);
         }
     }
