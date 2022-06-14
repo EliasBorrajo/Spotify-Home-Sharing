@@ -1,0 +1,1 @@
+Manuel d'utilisation de l'application VSFy alias Spotify Valais.
