@@ -1,11 +1,18 @@
 package ch.hevs.User;
 
-
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Classe permettant de jouer une musique via un InputStream, sans avoir besoin de stocker la musique dans un fichier.
+ * La classe AudioSystem utilise un "clip" qui va nous servir pour savoir à quelle seconde de la musique on se trouve,
+ * et ainsi pouvoir utiliser des commandes tel que PLAY PAUSE et STOP.
+ * @implements Runnable : Permet de lancer le thread de l'écoute de musique, et un autre thread pourra commander de la musique.
+ *
+ * @author Antoine Wiedmer, Elias Borrajo
+ */
 public class AudioPlayer implements Runnable
 {
     // A T T R I B U T S
@@ -21,6 +28,14 @@ public class AudioPlayer implements Runnable
 
 
     // C O N S T R U C T E U R
+
+    /**
+     * Constructeur de la classe AudioPlayer.
+     * @param is : Lui donne l'InputStream de la musique à jouer.
+     * @throws UnsupportedAudioFileException
+     * @throws IOException
+     * @throws LineUnavailableException
+     */
     public AudioPlayer(InputStream is) throws UnsupportedAudioFileException, IOException, LineUnavailableException
     {
         // create AudioInputStream object
@@ -38,6 +53,9 @@ public class AudioPlayer implements Runnable
         clip.loop(Clip.LOOP_CONTINUOUSLY); // Joue la musique en boucle
     }
 
+    /**
+     * Joue la musique
+     */
     public void play()
     {
         //start the clip
@@ -47,7 +65,9 @@ public class AudioPlayer implements Runnable
         System.out.println("AUDIO PLAYER : Play");
     }
 
-    // Method to pause the audio
+    /**
+     * Arrête la musique
+     */
     public void pause()
     {
         if (status.equals("paused"))
@@ -61,7 +81,12 @@ public class AudioPlayer implements Runnable
         System.out.println("AUDIO PLAYER : Pause");
     }
 
-    // Method to reset audio stream
+    /**
+     * Arrête la musique et remet le curseur à la position 0
+     * @throws UnsupportedAudioFileException
+     * @throws IOException
+     * @throws LineUnavailableException
+     */
     public void resetAudioStream() throws UnsupportedAudioFileException, IOException, LineUnavailableException
     {
         audioInputStream = AudioSystem.getAudioInputStream(
@@ -71,6 +96,9 @@ public class AudioPlayer implements Runnable
     }
 
 
+    /**
+     * Thread de l'écoute de la musique.
+     */
     @Override
     public void run()
     {

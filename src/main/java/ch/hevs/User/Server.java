@@ -7,7 +7,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-
+/**
+ * Le serveur est un thread qui attend les clients qui se connectent.
+ * Il crée un thread pour chaque client qui se connecte.
+ * Role : Serveur à l'écoute des clients, et les redirige vers un ClientHandler qui gère les requêtes du client.
+ */
 public class Server implements Runnable
 {
     // A T T R I B U T S
@@ -19,6 +23,12 @@ public class Server implements Runnable
 
 
     // C O N S T R U C T E U R
+
+    /**
+     * Constructeur du serveur.
+     * @param portDuServeur : le port du serveur défini dans AppUser
+     * @param musicList : la liste de musiques définie dans AppUser
+     */
     public Server(int portDuServeur, ArrayList<Musique> musicList)
     {
         this.listeDeMusiques = musicList;
@@ -36,6 +46,10 @@ public class Server implements Runnable
     }
 
     // R U N N A B L E
+
+    /**
+     * Méthode run du serveur.
+     */
     @Override
     public void run()
     {
@@ -47,6 +61,9 @@ public class Server implements Runnable
 
 
     // M E T H O D E S
+    /**
+     * Méthode qui démarre l'application.
+     */
     private void startApp()
     {
         // 1) Initialiser le Serveur en écoute
@@ -78,6 +95,9 @@ public class Server implements Runnable
 
     }
 
+    /**
+     * Méthode qui écoute les clients et les redirige vers un ClientHandler.
+     */
     private void listenAndAcceptUsers()
     {
         socket = null;

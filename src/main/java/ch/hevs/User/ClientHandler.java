@@ -8,7 +8,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
-// ClientHandler class
+/**
+ * Thread qui gère les requetes du client et qui envoie les réponses au client.
+ * Est créé par le serveur, pour chaque client connecté.
+ */
 class ClientHandler implements Runnable
 {
     // A T T R I B U T S
@@ -22,6 +25,13 @@ class ClientHandler implements Runnable
 
 
     // C O N S T R U C T E U R
+    /**
+     * Constructeur de la classe ClientHandler
+     * @param socket : Socket du Serveur
+     * @param dis : DataInputStream du Serveur
+     * @param dos : DataOutputStream du Serveur
+     * @param listeDeMusiques : Liste de musiques du Serveur qui elle même vient de AppUser
+     */
     public ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, ArrayList<Musique> listeDeMusiques)
     {
         this.socket = socket;
@@ -32,6 +42,9 @@ class ClientHandler implements Runnable
     }
 
 
+    /**
+     * Méthode qui gère les requetes du client et qui envoie les réponses au client.
+     */
     @Override
     public void run()
     {
@@ -87,16 +100,7 @@ class ClientHandler implements Runnable
                             songIsFound = false;
                             break;
                         }
-                        /*
-                        else if ( (listeDeMusiques.size() - listeDeMusiques.indexOf(musique)) == 1)
-                        {
-                            // autrement rien n'a été trouvé, on envoie une erreur
-                            System.out.println("Song not found");
-                            sending = "SongNOTFound";
-                            dos.writeUTF(sending);
-                            dos.flush();
-                            songIsFound = false;
-                        }*/
+
                     }
                 }while (songIsFound == false);
 
