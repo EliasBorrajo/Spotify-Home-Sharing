@@ -288,7 +288,7 @@ public class Client implements Runnable, Serializable
         catch (IOException e)
         {
             System.err.println("Error while sending request WRITE UTF to scanner");
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
         }
 
         System.out.println("Goodbye");
@@ -435,7 +435,7 @@ public class Client implements Runnable, Serializable
         {
             System.out.println("Unsupported audio file");
             System.out.println("Audio Player could not play the song");
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
         }
         catch (LineUnavailableException e)
         {

@@ -1,4 +1,4 @@
-package Logs;
+package ch.hevs.Logs;
 
 import ch.hevs.Configurations.Config;
 
@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
 import java.util.logging.Logger;
 
 /**
@@ -30,7 +29,7 @@ public class Log
     public Log()
     {
         // Get logger
-        myLogger = Logger.getLogger("TestLog"); // TODO Renommer TEST non ?  RENOMMER EN "ch.hevs"
+        myLogger = Logger.getLogger("ch.hevs");
 
         try
         {

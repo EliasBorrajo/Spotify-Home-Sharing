@@ -1,7 +1,7 @@
 package ch.hevs.Scanner;
 
 
-import Logs.Log;
+import ch.hevs.Logs.Log;
 import ch.hevs.Configurations.Config;
 import java.io.*;
 import java.net.ServerSocket;

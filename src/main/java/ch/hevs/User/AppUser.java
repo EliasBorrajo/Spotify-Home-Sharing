@@ -1,10 +1,8 @@
 package ch.hevs.User;
 
 import ch.hevs.Configurations.Config;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
+
 
 /*
  * Cette classe permet de lancer l'application. Elle permet de lancer le serveur et le client, pour un seul utilisateur.

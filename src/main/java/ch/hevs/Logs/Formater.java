@@ -1,4 +1,4 @@
-package Logs;
+package ch.hevs.Logs;
 
 import java.util.Date;
 import java.util.logging.*;
