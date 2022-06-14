@@ -1,7 +1,5 @@
 package ch.hevs.Configurations;
 
-import Logs.Log;
-
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.Path;
@@ -33,11 +31,11 @@ public class Config
     //*****************************************************************************
     private static Config configSingleton = null;   // Must be declared here to null for the first & only creation of the object
     private File storeFolder;                       // Is the folder that we create, at the location of the VARIABLE_ENVIRONNEMENT
-    // All personal files in JSON format will be stored in this folder
+    // All personal files will be stored in this folder
     private File uploadFolder;
     private File downloadFolder;
     private File logsFolder;
-    private String envVarStorePath;                       // Is the value contained in the environment variable. We return it to the getters.
+    private String envVarStorePath;                 // Is the value contained in the environment variable. We return it to the getters.
     private Path pathUpload;
     private Path pathDownload;
     private Path pathLogs;
@@ -129,7 +127,6 @@ public class Config
     //*****************************************************************************
     /**
      * If the object does not exist, we create the object and so we use the constructor.
-     *
      * @return Config Object configSingleton
      */
     public static Config getConfig()

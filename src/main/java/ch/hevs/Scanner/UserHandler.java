@@ -1,43 +1,29 @@
 package ch.hevs.Scanner;
 
-import Logs.Formater;
-import Logs.Log;
-import ch.hevs.Configurations.Config;
-import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Client;
-
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-
 import static ch.hevs.Scanner.AppScanner.log;
 
-// ClientHandler class
+/**
+ * @author Elias Borrajo
+ * Classe crée par Scanner pour gérer les connexions des utilisateurs et l'interraction avec eux.
+ * -Rôle : Gérer les requetes des utilisateurs.
+ *
+ * Création de 1 socket pour chaque utilisateur connecté, et de 1 UserHandler pour chaque utilisateur connecté.
+ */
 class UserHandler implements Runnable
 {
     // A T T R I B U T S
     private final Socket socket;
     private final DataInputStream dis;
     private final DataOutputStream dos;
-    private final InputStream is;
-    private final OutputStream os;
-    private final InputStreamReader isr;
-    private final OutputStreamWriter osw;
-    private final BufferedReader buffin;
-    private final BufferedWriter buffout;
-    private final PrintWriter pw;
 
     private boolean isRunning;
     private Client client;
     private LinkedList<UserHandler> scannerUsersList;
 
-    private ConsoleColors cc;
 
 
     // C O N S T R U C T E U R
@@ -48,30 +34,21 @@ class UserHandler implements Runnable
         this.dos = dos;
         this.scannerUsersList = connectedUsers;
 
-        // OutputStream
-        this.os = s.getOutputStream();
-        this.osw = new OutputStreamWriter(os);
-        this.buffout = new BufferedWriter(osw);
-        this.pw = new PrintWriter(os, true);
-
-        // InputStream
-        this.is = s.getInputStream();
-        this.isr = new InputStreamReader(is);
-        this.buffin = new BufferedReader(isr);
-
         this.isRunning = true;
         this.client = null;
-        this.cc = ConsoleColors.PURPLE;
     }
 
 
+    /**
+     * Gérer les requetes des utilisateurs.
+     * String received : Requete de l'utilisateur à traiter.
+     */
     @Override
     public void run()
     {
         String received;
-        String sending;
 
-        // 1) Récupérer les données du client (IP / Port / Contenu)
+        // 1) Récupérer les données du client (IP / Port / Contenu). Stocker la première fois les informations du client.
         try
         {
             received = dis.readUTF();
@@ -88,8 +65,7 @@ class UserHandler implements Runnable
         // 2) Handler en attente des requêtes du client
         while (isRunning)
         {
-            System.out.println(cc.PURPLE.getCOLOR() +
-                    "SCANNER - Waiting for client requests...");
+            System.out.println("SCANNER - Waiting for client requests...");
 
             try
             {
@@ -148,8 +124,7 @@ class UserHandler implements Runnable
         // 3) Fin du thread
         try
         {
-            System.out.println(cc.PURPLE.getCOLOR() +
-                    "SCANNER - Closing this connection.");
+            System.out.println("SCANNER - Closing this connection.");
             this.socket.close();
         }
         catch (IOException e)
@@ -158,10 +133,14 @@ class UserHandler implements Runnable
             throw new RuntimeException(e);
         }
 
-        System.out.println(cc.PURPLE.getCOLOR() +
-                "SCANNER - End of thread.");
+        System.out.println("SCANNER - End of thread.");
     }
 
+    /**
+     * Supprimer l'utilisateur de la liste des utilisateurs connectés.
+     * @synchronized : Car la liste est dans le Scanner, et que elle est partagé par plusieurs thread.
+     * On copie la liste ici en temporaire, pour pouvoir traiter la liste et savoir quel User supprimer de la liste du Scanner.
+     */
     private synchronized void removeUserFromList()
     {
         // La liste est synchronised --> En faire une copie,
@@ -182,8 +161,7 @@ class UserHandler implements Runnable
 
 
     /**
-     * 1) Récupérer les données du client (IP / Port / Contenu)
-     * Stocker la première fois les informations du client
+     * Récupérer les données du client (IP / Port / Contenu)
      * Stocker la dé-serialisation du client dans un objet Client
      */
     private void deSerializeClientInformations()
@@ -202,8 +180,7 @@ class UserHandler implements Runnable
             this.client = (Client) ois.readObject();
 
 
-            System.out.println(cc.PURPLE.getCOLOR() +
-                    "Client informations received !" +
+            System.out.println("Client informations received !" +
                     "\nClient Infos : " + client.toString());
 
             String sendConfirmation = "Client_Received";
@@ -227,7 +204,7 @@ class UserHandler implements Runnable
     /**
      * Envoyer la liste des clients connectés du scanner au client qui a demandé la liste
      *
-     * @throws IOException
+     * @throws IOException : Si le client n'a pas pu récupérer la liste du scanner
      * @synchronized Tous les threads User Handler accèdent au même objet scannerUsersList
      */
     public synchronized void sendUsersList()
@@ -267,13 +244,11 @@ class UserHandler implements Runnable
 
             if (confirmation.equals("listReceived"))
             {
-                System.out.println(cc.PURPLE.getCOLOR() +
-                        "SCANNER - Client has received the list of connected users !");
+                System.out.println("SCANNER - Client has received the list of connected users !");
             }
             else
             {
-                System.out.println(cc.PURPLE.getCOLOR() +
-                        "SCANNER - Client has NOT received the list of connected users !");
+                System.out.println("SCANNER - Client has NOT received the list of connected users !");
             }
 
         }
@@ -284,6 +259,7 @@ class UserHandler implements Runnable
         }
     }
 
+    // G E T T E R S
     public Client getClient()
     {
         return client;

@@ -1,26 +1,26 @@
 package ch.hevs.Scanner;
 
-import Logs.Formater;
+
 import Logs.Log;
 import ch.hevs.Configurations.Config;
-import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
-import ch.hevs.User.Server;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Paths;
 import java.util.LinkedList;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
- * @author Elias
+ * @author Elias Borrajo & Arthur Avez
  * SCANNER --> 1 app scanner par subnet P2P
+ * - Rôle : Serveur à l'écoute des connexions des utilisateurs, et transmet la gestion de l'utilisateur à UserHandler.
+ *          Création d'un socket pour chaque utilisateur connecté.
+ *
  * - Son adresse IP et PORT doivent être connus, les utilisateurs se partagent l'information oralement.
- * - Contient la liste des clients qui ont des fichiers audios
- * - adresse IP / Port / Liste fichiers
+ * - Le scanner est un serveur qui attend les connexions des utilisateurs.
+ * - Le scanner envoie les données à l'utilisateur qui l'a demandé.
+ * - Le scanner sert de serveur de synchronisation pour les utilisateurs.
+ * - Contient la liste des clients avec leurs fichiers audios mis à disposition sur leur Server.
+ *      - Client =  adresse IP / Port / Liste fichiers audios
  */
 public class AppScanner
 {
@@ -28,7 +28,6 @@ public class AppScanner
     private static final int PORT_DU_SERVEUR = 45000;
     private static LinkedList<UserHandler> connectedUsers;
     private static boolean isRunning;
-    private static ConsoleColors cc = ConsoleColors.PURPLE;
 
     private static ServerSocket server;
     private static Socket socket;
@@ -36,8 +35,7 @@ public class AppScanner
 
     /**
      * Initiliser le Scanner avant de le lancer
-     *
-     * @throws IOException
+     * @throws IOException : Si on n'arrive pas à créer un socket d'écoute sur le port du scanner.
      */
     private static void initScanner()
     {
@@ -62,9 +60,8 @@ public class AppScanner
     /**
      * Lance le scanner
      * Il sert aux clients qui se connectent au scanner, de savoir quels autres existent sur le subnet,
-     * de pouvoir s'y connecter afin de leur récuperer leurs fichiers.
-     *
-     * @param args
+     * de pouvoir s'y connecter afin de leur récupérer leurs fichiers.
+     * @param args : Ne sert à rien ici, pas traité
      */
     public static void main(String[] args)
     {
@@ -79,7 +76,6 @@ public class AppScanner
         // 5) Quand un client se déconnecte, l'enlever de la liste
 
 
-        System.out.print(cc.getCOLOR());
         System.out.println("Scanner started");
         try
         {
@@ -108,7 +104,7 @@ public class AppScanner
     // M E T H O D E S
     /**
      *  Se mettre en attente & écoute, pour avoir des clients
-     *  Quand un client se connecte, l'enregistrer dans une linked list, avec son IP et son contenu (liste des fichiers)
+     *  Quand un client se connecte, l'enregistrer dans une list, avec son IP, Port et son contenu (liste des fichiers)
      * @author Elias
      */
     private static void listenAndAcceptUsers()
@@ -122,7 +118,6 @@ public class AppScanner
             log.myLogger.info("Client " + socket.getInetAddress() + " is connected to the server on port " + socket.getPort());
 
             System.out.println("Un nouveau client s'est connecté : " + socket);
-            // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
 
             // obtaining input and out streams
             DataInputStream  dis = new DataInputStream ( socket.getInputStream()  );
