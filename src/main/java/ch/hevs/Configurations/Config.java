@@ -42,11 +42,6 @@ public class Config
     private Path pathDownload;
     private Path pathLogs;
     private static final String VARIABLE_ENVIRONNEMENT = "VSSPOTIFY"; // Name of the Variable on the PC
-    /**********************************
-     * LOGS
-     *********************************/
-    String logsFileName = "logs";
-    String logsFileNameExtension = logsFileName + ".txt";
 
     //*****************************************************************************
     // C O N S T R U C T O R - PRIVATE SINGLETON

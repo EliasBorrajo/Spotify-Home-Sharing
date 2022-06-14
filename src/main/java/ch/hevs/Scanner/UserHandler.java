@@ -36,7 +36,6 @@ class UserHandler implements Runnable
     private boolean isRunning;
     private Client client;
     private LinkedList<UserHandler> scannerUsersList;
-    private FileHandler fh;
 
     private ConsoleColors cc;
 
