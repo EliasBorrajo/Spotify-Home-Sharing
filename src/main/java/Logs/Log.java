@@ -10,9 +10,12 @@ import java.util.logging.Formatter;
 import java.util.logging.Logger;
 
 /**
+ * Classe qui va permettre d'écrire des logs dans un fichier.
  * @author Arthur Avez
  */
-public class Log {
+public class Log
+{
+    // A T T R I B U T S
     public Logger myLogger;
     // By month
     private LocalDate date = LocalDate.now();
@@ -20,11 +23,17 @@ public class Log {
     private String month = date.getMonth().toString();
     private String filePath = Paths.get(Config.getConfig().getPathLogs().toString(), "logs" + month + year + ".log").toString();
 
-    public Log() {
+    // C O N S T R U C T E U R
+    /**
+     * Constructeur de la classe Log
+     */
+    public Log()
+    {
         // Get logger
-        myLogger = Logger.getLogger("TestLog");
+        myLogger = Logger.getLogger("TestLog"); // TODO Renommer TEST non ?  RENOMMER EN "ch.hevs"
 
-        try{
+        try
+        {
             // Define a new file handler and its log
             FileHandler fh = new FileHandler(filePath, true);
             // Add the handle to the log
@@ -33,9 +42,13 @@ public class Log {
             Formater.SocketFormatter myFormatter = new Formater.SocketFormatter();
             fh.setFormatter(myFormatter);
 
-        } catch (RuntimeException ex) {
+        }
+        catch (RuntimeException ex)
+        {
             ex.printStackTrace();
-        } catch (IOException ex) {
+        }
+        catch (IOException ex)
+        {
             ex.printStackTrace();
         }
     }
