@@ -1,6 +1,7 @@
 package ch.hevs.User;
 
 
+import Logs.Log;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.ToolBox.SleepTimerConverter.Converter;

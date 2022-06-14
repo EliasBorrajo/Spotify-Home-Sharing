@@ -119,7 +119,6 @@ public class Server implements Runnable
                 System.err.println("Socket non fermé, impossible de le fermer car non existant");
                 throw new RuntimeException(ex);
             }
-
             e.printStackTrace();
         }
     }

@@ -1,5 +1,7 @@
 package ch.hevs.Configurations;
 
+import Logs.Log;
+
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.Path;
@@ -120,17 +122,6 @@ public class Config
                 System.err.println("Folder creation LOGS did not work");
                 System.exit(1); // We BRUTALLY quit the app.
             }
-        }
-
-        /**********************************
-         * LOGS
-         *********************************/
-        // 5) CREER LE FICHIER LOGS.TXT DE L'UTILISATEUR
-        File logsFile = new File(logsFolder, logsFileNameExtension);
-        try {
-            logsFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         // If I arrive here, it is because my file could be created correctly and it EXISTS!

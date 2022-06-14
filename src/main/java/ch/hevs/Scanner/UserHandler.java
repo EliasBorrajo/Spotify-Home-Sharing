@@ -1,6 +1,7 @@
 package ch.hevs.Scanner;
 
 import Logs.Formater;
+import Logs.Log;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Client;
@@ -14,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+
+import static ch.hevs.Scanner.AppScanner.log;
 
 // ClientHandler class
 class UserHandler implements Runnable
@@ -121,9 +124,8 @@ class UserHandler implements Runnable
                         System.out.println("Closing this connection.");
                         isRunning = false;
                         removeUserFromList();
-
+                        log.myLogger.info("Client " + socket.getInetAddress() + " disconnected");
                         this.socket.close();
-
                         System.out.println("Connection closed");
                         break;
 
@@ -134,10 +136,10 @@ class UserHandler implements Runnable
             }
             catch (IOException e)
             {
-                System.out.println("User logout from scanner");
+                log.myLogger.warning("Client " + client.getUserIp() + " forced to logout : " + e);
+                System.out.println("Client forced to logout");
                 isRunning = false;
                 removeUserFromList();
-
                 System.err.println("SCANNER - run 1 : Switch Case I/O Exception !");
                 throw new RuntimeException(e);
             }

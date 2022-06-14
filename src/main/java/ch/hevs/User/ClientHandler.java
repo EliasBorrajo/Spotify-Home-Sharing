@@ -1,5 +1,6 @@
 package ch.hevs.User;
 
+import Logs.Log;
 import ch.hevs.Configurations.Config;
 import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import ch.hevs.User.Client;
@@ -26,7 +27,6 @@ class ClientHandler implements Runnable
     private ArrayList<Musique> myMusicList;
     private Musique selectedMusic;
     private ConsoleColors cc;
-
 
     // C O N S T R U C T E U R
     public ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, ArrayList<Musique> listeDeMusiques)
@@ -124,7 +124,6 @@ class ClientHandler implements Runnable
                 OutputStream os = socket.getOutputStream();
                 os.write(musicBuffer, 0, musicBuffer.length);
                 os.flush();
-
             }
 
         }

@@ -32,10 +32,7 @@ public class AppScanner
 
     private static ServerSocket server;
     private static Socket socket;
-    /*****************************
-     * LOG
-     ****************************/
-    static Log log = new Log();
+    protected static Log log = new Log();
 
     /**
      * Initiliser le Scanner avant de le lancer
@@ -122,15 +119,7 @@ public class AppScanner
         {
             // socket object to receive incoming client requests
             socket = server.accept();
-
-            /****************************
-             * LOGS
-             ***************************/
-
             log.myLogger.info("Client " + socket.getInetAddress() + " is connected to the server on port " + socket.getPort());
-
-
-
 
             System.out.println("Un nouveau client s'est connecté : " + socket);
             // TODO : Créer un LOG des clients connectés : Client IP, Port, Liste de fichiers, date & heure de connection
@@ -151,6 +140,7 @@ public class AppScanner
             t.start();
 
         } catch (Exception e) {
+            log.myLogger.warning("Failed to connect to the scanner : " + e);
             System.err.println( "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client");
             // Si le socket existe, essaye de le fermer
             try
@@ -158,6 +148,7 @@ public class AppScanner
                 socket.close();
             } catch (IOException ex)
             {
+                log.myLogger.severe("Impossible to close socket connection : " + ex);
                 System.err.println("Socket non fermé, impossible de le fermer car non existant");
                 throw new RuntimeException(ex);
             }

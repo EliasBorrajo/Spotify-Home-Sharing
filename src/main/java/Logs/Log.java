@@ -11,11 +11,11 @@ import java.util.logging.Logger;
 
 public class Log {
     public Logger myLogger;
-    // 1 file per month with month and year
+    // By month
     private LocalDate date = LocalDate.now();
     private int year = date.getYear();
     private String month = date.getMonth().toString();
-    private String filePath = Paths.get(Config.getConfig().getPathLogs().toString(), "logs.txt").toString();
+    private String filePath = Paths.get(Config.getConfig().getPathLogs().toString(), "logs" + month + year + ".log").toString();
 
     public Log() {
         // Get logger
