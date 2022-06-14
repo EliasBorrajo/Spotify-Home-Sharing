@@ -26,6 +26,7 @@ public class AudioPlayer implements Runnable
         // create AudioInputStream object
         //On fait toujours inputStream depuis le socket, peu importe client / serveur
         audioInputStream = AudioSystem.getAudioInputStream(is);
+
         //AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
 
         // create clip reference
