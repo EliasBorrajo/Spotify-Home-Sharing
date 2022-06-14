@@ -14,6 +14,10 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 // La classe implémente l'extension Runnable et Serializable
+
+/**
+ * @author Elias Borrajo & Arthur Avez
+ */
 public class Client implements Runnable, Serializable
 {
     // A T T R I B U T S
@@ -28,7 +32,7 @@ public class Client implements Runnable, Serializable
     private transient DataOutputStream dos;
     private transient boolean isConnected;
     private transient boolean isRunning;
-    private transient ConsoleColors consoleColors;
+
 
     // Attributs pour la connection à un autre user
     private transient Socket p2pSocket;
@@ -45,7 +49,7 @@ public class Client implements Runnable, Serializable
 
         isConnected = false;
         isRunning = true;
-        consoleColors = ConsoleColors.GREEN;
+
     }
 
     // R U N N A B L E
@@ -115,7 +119,7 @@ public class Client implements Runnable, Serializable
         // Création d'un tableau permettant de retourner toutes les infos nécessaires à la connection à un serveur
         String[] informations = new String[2];
 
-        System.out.print(consoleColors.GREEN.getCOLOR());
+
         System.out.println("Client is running...");
         System.out.println("Connect to the scanner with the following informations :");
         System.out.println("Enter scanner IP address : ");

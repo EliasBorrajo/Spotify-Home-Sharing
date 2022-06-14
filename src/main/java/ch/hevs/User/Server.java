@@ -1,6 +1,5 @@
 package ch.hevs.User;
 
-import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -17,13 +16,11 @@ public class Server implements Runnable
     private static ServerSocket listeningSocket;
     private static Socket socket;
     private boolean isRunning;
-    private ConsoleColors cc;
 
 
     // C O N S T R U C T E U R
     public Server(int portDuServeur, ArrayList<Musique> musicList)
     {
-        cc = ConsoleColors.YELLOW;
         this.listeDeMusiques = musicList;
         this.PORT_DU_SERVEUR = portDuServeur;
         this.isRunning = true;
@@ -42,7 +39,7 @@ public class Server implements Runnable
     @Override
     public void run()
     {
-        System.out.println(cc.YELLOW.getCOLOR()+ "Server is running");
+        System.out.println("Server is running");
 
         startApp();
     }
@@ -58,7 +55,6 @@ public class Server implements Runnable
 
         // 3) Créer un thread pour chaque client
 
-        System.out.print(cc.getCOLOR());
         System.out.println("Server started");
         try
         {

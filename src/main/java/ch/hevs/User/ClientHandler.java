@@ -1,19 +1,12 @@
 package ch.hevs.User;
 
-import Logs.Log;
 import ch.hevs.Configurations.Config;
-import ch.hevs.ToolBox.ConsoleColors.ConsoleColors;
-import ch.hevs.User.Client;
-
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
+
 
 // ClientHandler class
 class ClientHandler implements Runnable
@@ -26,7 +19,7 @@ class ClientHandler implements Runnable
     private boolean isRunning;
     private ArrayList<Musique> myMusicList;
     private Musique selectedMusic;
-    private ConsoleColors cc;
+
 
     // C O N S T R U C T E U R
     public ClientHandler(Socket socket, DataInputStream dis, DataOutputStream dos, ArrayList<Musique> listeDeMusiques)
@@ -36,7 +29,6 @@ class ClientHandler implements Runnable
         this.dos = dos;
         this.myMusicList = listeDeMusiques;
         this.isRunning = true;
-        this.cc = ConsoleColors.YELLOW;
     }
 
 
@@ -57,8 +49,7 @@ class ClientHandler implements Runnable
                 boolean songIsFound = false;
                 do
                 {
-                    System.out.println(cc.YELLOW.getCOLOR() +
-                            "SERVER - Waiting for client request...");
+                    System.out.println("SERVER - Waiting for client request...");
 
 
                     // Se mettre en écoute des requetes du client
@@ -139,8 +130,7 @@ class ClientHandler implements Runnable
         // 3) Fin du thread
         try
         {
-            System.out.println(cc.YELLOW.getCOLOR() +
-                    "SERVEUR - Closing this connection.");
+            System.out.println("SERVEUR - Closing this connection.");
             this.socket.close();
         }
         catch (IOException e)
@@ -149,8 +139,7 @@ class ClientHandler implements Runnable
             throw new RuntimeException(e);
         }
 
-        System.out.println(cc.YELLOW.getCOLOR() +
-                "SERVEUR - End of thread.");
+        System.out.println("SERVEUR - End of thread.");
     }
 
     // M E T H O D E S
