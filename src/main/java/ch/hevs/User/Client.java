@@ -640,7 +640,7 @@ public class Client implements Runnable, Serializable
             String extension = fileList[i].substring(extensionIndex);
 
             // Si son extention est mp3, on créé un objet musique qu'on stocke dans la liste d'objets musique
-            if (extension.equals("mp3") || extension.equals("wav"))
+            if (/*extension.equals("mp3") || */extension.equals("wav"))
             {
                 // On récupère la taille de la musique
                 File fileMusique = new File(Paths.get(directoryUpload.getPath(), fileList[i]).toString());
