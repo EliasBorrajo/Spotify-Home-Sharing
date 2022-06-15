@@ -122,7 +122,7 @@ public class Server implements Runnable
             // obtaining input and out streams
             DataInputStream dis = new DataInputStream ( socket.getInputStream()  );
             DataOutputStream dos = new DataOutputStream( socket.getOutputStream() );
-            System.out.println("Assigning new thread for this client");
+
 
             // create a new thread object
             ClientHandler ch = new ClientHandler(socket, dis, dos, listeDeMusiques);

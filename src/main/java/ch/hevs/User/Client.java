@@ -427,7 +427,6 @@ public class Client implements Runnable, Serializable
 
             // 8) Quitter le thread de lecture de la musique
             System.out.println("End of playing a music ! back to menu...");
-            p2pSocket.close(); // TODO ???
 
         }
         catch (IOException e)
@@ -435,14 +434,13 @@ public class Client implements Runnable, Serializable
             String msg = "CLIENT - Could not send request, something went wrong.";
             System.err.println(msg);
             log.myLogger.severe(msg + " : " + e.toString());
-            isRunning = false;
+
         }
         catch (UnsupportedAudioFileException e)
         {
             String msg = "CLIENT - Unsupported audio file, Audio Player could not play the song.";
             System.err.println(msg);
             log.myLogger.severe(msg + " : " + e.toString());
-            isRunning = false;
         }
         catch (LineUnavailableException e)
         {
@@ -488,15 +486,11 @@ public class Client implements Runnable, Serializable
         }
         catch (UnknownHostException e)
         {
-            isConnected = false;
             System.err.println("Aucun serveur trouvé avec ces informations, retour au menu, veuillez réessayer");
-            //throw new RuntimeException(e);
         }
         catch (IOException e)
         {
-            isConnected = false;
             System.err.println("Impossible de se connecter au serveur, veuillez réessayer");
-            //throw new RuntimeException(e);
         }
 
 

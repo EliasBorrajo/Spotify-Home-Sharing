@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import static ch.hevs.User.AppUser.log;
+
 
 /**
  * Thread qui gère les requetes du client et qui envoie les réponses au client.
@@ -54,7 +56,7 @@ class ClientHandler implements Runnable
         try
         {
             received = dis.readUTF();
-            System.out.println("un client s'est connecté : " + socket.toString());
+            log.myLogger.info("un client s'est connecté : " + socket.toString());
 
             // 2) Handler en attente des requêtes du client
             while (isRunning)
@@ -62,13 +64,13 @@ class ClientHandler implements Runnable
                 boolean songIsFound = false;
                 do
                 {
-                    System.out.println("SERVER - Waiting for client request...");
+                    //System.out.println("SERVER - Waiting for client request...");
 
 
                     // Se mettre en écoute des requetes du client
                     // Get le message du client --> Serveur READ / Client WRITE
                     received = dis.readUTF(); // On reçoit la musique voulue
-
+                    log.myLogger.info("Musiqc request : " + received + " from " + socket.toString());
 
                     // 1) Le user va sélécteionner une musique à jouer, vérifier si elle existe dans mon dossier
                     //      Si elle existe, je lui envoie une confirmation WRITE,
@@ -82,7 +84,7 @@ class ClientHandler implements Runnable
                         {
                             // On envoie une confirmation au client et on brise la boucle
                             sending = "SongFound";
-                            System.out.println("Song Found");
+                            //System.out.println("Song Found");
                             dos.writeUTF(sending);
                             dos.flush();
                             songIsFound = true;
@@ -94,7 +96,7 @@ class ClientHandler implements Runnable
                         {
                             // On envoie une erreur au client et on brise la boucle
                             sending = "SongNotFound";
-                            System.out.println("Song Not Found");
+                            //System.out.println("Song Not Found");
                             dos.writeUTF(sending);
                             dos.flush();
                             songIsFound = false;
@@ -108,7 +110,6 @@ class ClientHandler implements Runnable
                 // 2) Lire le fichier de la musique sur le PC
                 // préparer dans la mémoire une zone dans laquelle on va mettre tout le fichier dedans
                 byte[] musicBuffer = new byte[ (int) selectedMusic.getMusicFileSize() ];
-                System.out.println("FILE SIZE = " + musicBuffer.length);
                 Path musicPath = Paths.get(Config.getConfig().getPathUpload().toString(), selectedMusic.getMusicFileName());
                 BufferedInputStream bis = new BufferedInputStream( new FileInputStream( String.valueOf(musicPath) ));
 
@@ -125,9 +126,7 @@ class ClientHandler implements Runnable
         }
         catch (IOException e)
         {
-            System.err.println("Clienthandler : Erreur de lecture du flux de données");
-            System.err.println("Or client did EXIT properly");
-            //throw new RuntimeException(e);
+            System.err.println("Clienthandler : Client disconnected");
         }
 
 
