@@ -30,7 +30,7 @@ public class Formater
             sb.append(";");
 
             sb.append(record.getSourceClassName());
-            sb.append("; \t");
+            sb.append("; \t\t");
 
             // Get the level name and add it to the buffer
             sb.append(record.getLevel().getName());
