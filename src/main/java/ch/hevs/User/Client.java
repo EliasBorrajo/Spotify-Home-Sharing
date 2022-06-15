@@ -329,6 +329,7 @@ public class Client implements Runnable, Serializable
     private void selectSongToPlay(String requestToSend)
     {
 
+        AudioPlayer audioPlayer = null;
         try
         {
             // 1) Envoyer la requete au serveur --> Lancer une musique
@@ -380,7 +381,7 @@ public class Client implements Runnable, Serializable
             // On commande le thread depuis ici.
             // Ici on envoie les commandes au serveur, le serveur envoie les informations à AudioPlayer
             InputStream is = new BufferedInputStream( p2pSocket.getInputStream() );
-            AudioPlayer audioPlayer = new AudioPlayer(is);
+            audioPlayer = new AudioPlayer(is);
 
             Thread musicThread = new Thread(audioPlayer);
             musicThread.start();
@@ -423,7 +424,7 @@ public class Client implements Runnable, Serializable
                         break;
                 }
 
-            } while (isPlaying == true);
+            } while (isPlaying == true && !socket.isClosed());
 
             // 8) Quitter le thread de lecture de la musique
             System.out.println("End of playing a music ! back to menu...");
@@ -434,6 +435,10 @@ public class Client implements Runnable, Serializable
             String msg = "CLIENT - Could not send request, something went wrong.";
             System.err.println(msg);
             log.myLogger.severe(msg + " : " + e.toString());
+            if (audioPlayer != null)
+            {
+                audioPlayer.pause();
+            }
 
         }
         catch (UnsupportedAudioFileException e)
