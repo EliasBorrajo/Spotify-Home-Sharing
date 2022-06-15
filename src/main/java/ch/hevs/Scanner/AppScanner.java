@@ -122,7 +122,9 @@ public class AppScanner
         {
             // socket object to receive incoming client requests
             socket = server.accept();
-            log.myLogger.info("Client ip " + socket.getInetAddress() + " is connected to the Scanner with : " + socket + " local IP : " + socket.getLocalAddress());
+            String msg = "Client ip " + socket.getInetAddress() + " is connected to the Scanner with : " + socket + " local IP : " + socket.getLocalAddress();
+            log.myLogger.info(msg);
+            System.out.println(msg);
 
             //System.out.println("Un nouveau client s'est connecté : " + socket);
 
@@ -146,6 +148,7 @@ public class AppScanner
         {
             String msg = "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client";
             log.myLogger.severe(msg + " : " + e.toString());
+            System.err.println(msg);
             // Si le socket existe, essaye de le fermer
             try
             {

@@ -99,7 +99,9 @@ class UserHandler implements Runnable
                         System.out.println("Closing this connection.");
                         isRunning = false;
                         removeUserFromList();
-                        log.myLogger.info("Client " + client.getUserIp() + " disconnected");
+                        String msg = "Client " + client.getUserIp() + " disconnected";
+                        log.myLogger.info(msg);
+                        System.out.println(msg);
                         this.socket.close();
                         System.out.println("Connection closed");
                         break;
@@ -129,7 +131,7 @@ class UserHandler implements Runnable
         }
         catch (IOException e)
         {
-            System.err.println("SCANNER - run 2 : On n'a pas pu fermer la connexion !");
+            System.err.println("SCANNER - run 2 : On n'a pas pu fermer la connexion proprement!");
             throw new RuntimeException(e);
         }
 

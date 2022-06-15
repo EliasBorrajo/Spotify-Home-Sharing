@@ -62,6 +62,7 @@ public class AppUser
             else
             {
                 isRunningApp = false;
+                log.myLogger.warning("One of the threads is dead, stopping the application");
             }
 
             if (isRunningApp == false)

@@ -43,9 +43,11 @@ public class Server implements Runnable
             listeningSocket = new ServerSocket(PORT_DU_SERVEUR);
         } catch (IOException e)
         {
-            String msg = "SERVER : Impossible de créer un serveur sur le port " + portDuServeur;
-            System.err.println(msg);
-            throw new RuntimeException(e);
+            String msg = "SERVER : Impossible de créer un serveur sur le port " + PORT_DU_SERVEUR + ", il est probablement déjà utilisé.";
+            log.myLogger.severe(msg + " : " + e.toString());
+            isRunning = false;
+            System.exit(1); // Arrêt du programme en cas d'erreur
+
         }
     }
 
@@ -93,8 +95,11 @@ public class Server implements Runnable
 
         } catch (IOException e)
         {
-            System.err.println("SERVEUR - Init OR Listen : Error");
-            throw new RuntimeException(e);
+            String msg = "SERVEUR - Init OR Listen : Error";
+            System.err.println(msg);
+            log.myLogger.severe(msg + " : " + e.toString());
+            isRunning = false;
+            //throw new RuntimeException(e);
         }
 
     }
@@ -110,8 +115,9 @@ public class Server implements Runnable
         {
             // socket object to receive incoming client requests
             socket = listeningSocket.accept();
+            String msg = "Client ip " + socket.getInetAddress() + " is connected to the Server with : " + socket + " local IP : " + socket.getLocalAddress();
+            log.myLogger.info(msg);
 
-            log.myLogger.info("Client " + socket.getInetAddress() + " is connected to the server on port " + socket);
 
             // obtaining input and out streams
             DataInputStream dis = new DataInputStream ( socket.getInputStream()  );
@@ -128,15 +134,20 @@ public class Server implements Runnable
         }
         catch (Exception e)
         {
-            System.err.println( "SERVEUR - ListenAndAccept : Erreur lors de la connexion d'un nouveau client");
+            String msg = "SERVEUR - ListenAndAccept : Erreur lors de la connexion d'un nouveau client";
+            log.myLogger.severe(msg + " : " + e.toString());
+            System.err.println(msg);
+            isRunning = false;
             // Si le socket existe, essaye de le fermer
             try
             {
                 socket.close();
             } catch (IOException ex)
             {
-                System.err.println("Socket non fermé, impossible de le fermer car non existant");
-                throw new RuntimeException(ex);
+                String msg2 = "Socket non fermé, impossible de le fermer car non existant";
+                System.err.println(msg2);
+                log.myLogger.severe(msg2 + " : " + ex.toString());
+                //throw new RuntimeException(ex);
             }
             e.printStackTrace();
         }

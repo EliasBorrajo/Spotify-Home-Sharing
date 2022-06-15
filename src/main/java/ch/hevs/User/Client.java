@@ -87,9 +87,7 @@ public class Client implements Runnable, Serializable
             try
             {
                 connectToScanner(scannerIP, scannerPort);
-
                 userIp = socket.getLocalAddress().getHostAddress();
-                System.out.println("MY TRUE FINAL FORM IP : " + userIp);
             }
             catch (Exception e)
             {
@@ -104,11 +102,14 @@ public class Client implements Runnable, Serializable
         {
             dos.writeUTF("ClientReady");
             dos.flush();
-            sendSerializedClientPackage("...");
+            sendSerializedClientPackage();
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            log.myLogger.severe("Error while sending serialized client package to scanner." + e.toString());
+            isRunning = false;
+            isConnected = false;
+
         }
 
 
@@ -186,7 +187,11 @@ public class Client implements Runnable, Serializable
         // En cas d'échec de connection au scanner
         catch (IOException e)
         {
-            System.err.println("Connection to scanner failed !");
+            String msg = "Connection to scanner failed !";
+            System.err.println(msg);
+            log.myLogger.severe(msg + " : " + e.toString());
+            isRunning = false;
+            isConnected = false;
             throw new RuntimeException(e);
         }
     }
@@ -207,11 +212,13 @@ public class Client implements Runnable, Serializable
             do
             {
                 // Présentation du menu de fonctionnalités au client
+                System.out.println("***************************************************************");
                 System.out.println("MENU : ");
                 System.out.println("1) Show the available servers with their musics to stream");
                 System.out.println("2) Play a music");
                 System.out.println("3) Update my music list available on my PC to the scanner");
                 System.out.println("4) Logout");
+                System.out.println("***************************************************************");
 
                 // Tant que la saisie dans la console client est différente d'un int
                 while (!scan.hasNextInt()) // If not an int !
@@ -261,7 +268,7 @@ public class Client implements Runnable, Serializable
 
                         dos.writeUTF(requestToSend);
                         dos.flush();
-                        sendSerializedClientPackage(requestToSend);
+                        sendSerializedClientPackage();
                         System.out.println("Your music list has been sent to the scanner !");
                         break;
 
@@ -347,7 +354,6 @@ public class Client implements Runnable, Serializable
                     return; // On quitte la fonction
                 }
 
-                System.out.println("TEST : " + songToPlay);
                 // 3) Envoyer le nom de la musique au serveur,
                 // attendre la réponse pour vérifier que il ait bien encore la musique disponible
                 p2pDos.writeUTF(songToPlay);
@@ -366,7 +372,6 @@ public class Client implements Runnable, Serializable
                     isSongFound = false;
                 }
 
-                System.out.println("TEST 1");
             }while (isSongFound == false);
 
             // 6) Si la musique est disponible, lancer le thread de lecture de la musique
@@ -374,14 +379,10 @@ public class Client implements Runnable, Serializable
             // Envoyer la connection au AudioPlayer dans son thread pour reçevoir la musique en streaming et la jouer
             // On commande le thread depuis ici.
             // Ici on envoie les commandes au serveur, le serveur envoie les informations à AudioPlayer
-            System.out.println("TEST 2");
             InputStream is = new BufferedInputStream( p2pSocket.getInputStream() );
-            System.out.println("TEST 3");
             AudioPlayer audioPlayer = new AudioPlayer(is);
 
-            System.out.println("TEST 4");
             Thread musicThread = new Thread(audioPlayer);
-            System.out.println("TEST 5");
             musicThread.start();
             audioPlayer.play();
 
@@ -426,18 +427,22 @@ public class Client implements Runnable, Serializable
 
             // 8) Quitter le thread de lecture de la musique
             System.out.println("End of playing a music ! back to menu...");
-            //p2pSocket.close(); // TODO ???
+            p2pSocket.close(); // TODO ???
 
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            String msg = "CLIENT - Could not send request, something went wrong.";
+            System.err.println(msg);
+            log.myLogger.severe(msg + " : " + e.toString());
+            isRunning = false;
         }
         catch (UnsupportedAudioFileException e)
         {
-            System.out.println("Unsupported audio file");
-            System.out.println("Audio Player could not play the song");
-            //throw new RuntimeException(e);
+            String msg = "CLIENT - Unsupported audio file, Audio Player could not play the song.";
+            System.err.println(msg);
+            log.myLogger.severe(msg + " : " + e.toString());
+            isRunning = false;
         }
         catch (LineUnavailableException e)
         {
@@ -483,30 +488,17 @@ public class Client implements Runnable, Serializable
         }
         catch (UnknownHostException e)
         {
+            isConnected = false;
             System.err.println("Aucun serveur trouvé avec ces informations, retour au menu, veuillez réessayer");
             //throw new RuntimeException(e);
         }
         catch (IOException e)
         {
+            isConnected = false;
             System.err.println("Impossible de se connecter au serveur, veuillez réessayer");
             //throw new RuntimeException(e);
         }
-        finally
-        {
-            /*try
-            {
-                p2pSocket.close();
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException(e);
-            }*/
 
-            System.out.println("TEST 3");
-            // Si on a pas réussi à se connecter au serveur, on skip le RETURN TRUE, et on envoie le false
-            //return isConnected;
-
-        }
 
         return isConnected;
     }
@@ -514,7 +506,7 @@ public class Client implements Runnable, Serializable
     /**
      * Cette méthode permet d'envoyer un objet client sérialisé au scanner
      */
-    public void sendSerializedClientPackage(String requestToSend)
+    public void sendSerializedClientPackage()
     {
         ObjectOutputStream oos = null;
         try
@@ -528,7 +520,6 @@ public class Client implements Runnable, Serializable
 
             // Attend une confirmation du scanner
             String receivedMessage = dis.readUTF();
-            System.out.println("Received message from scanner : " + receivedMessage);
             if (receivedMessage.equals("Client_Received"))
             {
                 System.out.println("Scanner got my Client information Serialization !");
@@ -545,7 +536,9 @@ public class Client implements Runnable, Serializable
         }
         catch (IOException e)
         {
-            System.err.println("CLIENT - SendSerializedClientPackage : Could not send the object to the Scanner.");
+            String msg = "CLIENT - SendSerializedClientPackage : Could not send the object to the Scanner.";
+            System.err.println(msg);
+            log.myLogger.warning(msg + " : " + e.toString());
             e.printStackTrace();
 
             System.out.println("Something went wrong !, disconnecting from scanner, try again...");
@@ -690,7 +683,7 @@ public class Client implements Runnable, Serializable
                 musicList.add(musique);
             }
         }
-        printMaListeDeMusiques();
+        //printMaListeDeMusiques();
         // On retourne la liste d'objets musique
         return musicList;
     }
