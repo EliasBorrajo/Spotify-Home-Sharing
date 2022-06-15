@@ -88,7 +88,7 @@ public class Client implements Runnable, Serializable
             {
                 connectToScanner(scannerIP, scannerPort);
 
-                userIp = socket.getInetAddress().toString();//.getHostAddress();
+                userIp = socket.getLocalAddress().getHostAddress();
                 System.out.println("MY TRUE FINAL FORM IP : " + userIp);
             }
             catch (Exception e)
