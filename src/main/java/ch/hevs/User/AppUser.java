@@ -42,7 +42,7 @@ public class AppUser
         Thread clientThread = new Thread(client);
         Thread serverThread = new Thread(server);
 
-        log.myLogger.info("USER : Lancement du client");
+        log.myLogger.info("USER : Démarrage du client & serveur");
 
         System.out.println("USER APPLICATION STARTED");
         System.out.println("Starting server thread");
@@ -51,28 +51,33 @@ public class AppUser
 
         serverThread.start();
         clientThread.start();
+        isRunningApp = true;
 
-        if (serverThread.isAlive() && clientThread.isAlive())
+        while (isRunningApp)
         {
-            isRunningApp = true;
-        }
-        else
-        {
-            isRunningApp = false;
+            if (serverThread.isAlive() && clientThread.isAlive())
+            {
+                isRunningApp = true;
+            }
+            else
+            {
+                isRunningApp = false;
+            }
+
+            if (isRunningApp == false)
+            {
+                // On attend que les threads soient terminés pour fermer le programme
+                System.out.println("Waiting for threads to finish");
+                System.out.println("Closing server thread");
+                System.out.println("Closing client thread");
+                serverThread.interrupt();
+                clientThread.interrupt();
+
+                System.out.println("Closing application");
+                System.exit(0); // On ferme le programme (0 = succès).
+            }
         }
 
-        if (isRunningApp == false)
-        {
-            // On attend que les threads soient terminés pour fermer le programme
-            System.out.println("Waiting for threads to finish");
-            System.out.println("Closing server thread");
-            System.out.println("Closing client thread");
-            serverThread.interrupt();
-            clientThread.interrupt();
-
-            System.out.println("Closing application");
-            System.exit(0); // On ferme le programme (0 = succès).
-        }
 
     }
 }

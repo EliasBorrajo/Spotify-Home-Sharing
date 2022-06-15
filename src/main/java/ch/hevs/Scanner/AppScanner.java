@@ -122,7 +122,7 @@ public class AppScanner
         {
             // socket object to receive incoming client requests
             socket = server.accept();
-            log.myLogger.info("Client " + socket.getInetAddress() + " is connected to the server on port " + socket);
+            log.myLogger.info("Client ip " + socket.getInetAddress() + " is connected to the Scanner with : " + socket + " local IP : " + socket.getLocalAddress());
 
             //System.out.println("Un nouveau client s'est connecté : " + socket);
 

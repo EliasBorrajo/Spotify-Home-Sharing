@@ -99,7 +99,7 @@ class UserHandler implements Runnable
                         System.out.println("Closing this connection.");
                         isRunning = false;
                         removeUserFromList();
-                        log.myLogger.info("Client " + socket.getInetAddress() + " disconnected");
+                        log.myLogger.info("Client " + client.getUserIp() + " disconnected");
                         this.socket.close();
                         System.out.println("Connection closed");
                         break;
