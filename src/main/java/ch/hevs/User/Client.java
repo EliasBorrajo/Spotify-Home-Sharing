@@ -86,9 +86,9 @@ public class Client implements Runnable, Serializable
             // Tentative de connection au serveur
             try
             {
-                connectToScanner(scannerIP, scannerPort); // TODO : Cette ligne à decommenter pour la version finale
-                //connectToScanner("127.0.0.1", 45000);
-                userIp = socket.getInetAddress().getHostAddress();
+                connectToScanner(scannerIP, scannerPort);
+
+                userIp = socket.getInetAddress().toString();//.getHostAddress();
                 System.out.println("MY TRUE FINAL FORM IP : " + userIp);
             }
             catch (Exception e)
