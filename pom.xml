@@ -140,53 +140,15 @@
             </plugin>
 
 
-
-            <!-- UNIT TESTING -->
-            <!--<plugin>
-                <groupId>org.apache.maven.surefire</groupId>
-                <artifactId>maven-surefire-common</artifactId>
-                <version>2.22.2</version>
-            </plugin>-->
-
-            <!-- AUCUNE IDEE CE QUE C'EST @TODO-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
                 <version>2.4</version>
             </plugin>
 
-            <!-- DEPLOYMENT -->
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>-->
-
-            <!-- Deploiement sur HEROKU -->
-            <!--<plugin>
-                <groupId>com.heroku.sdk</groupId>
-                <artifactId>heroku-deploy</artifactId>
-                <version>3.0.4</version>
-                <configuration>
-                    <appName>VSFy</appName>
-                    <processTypes>
-                        <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
-                    </processTypes>
-                </configuration>
-            </plugin>-->
-
 
         </plugins>
     </build>
-
-    <!-- Deploy at Repository -->
-    <!--<distributionManagement>
-        <repository>
-            <id>test-distribution</id>
-            <name>Distribution name</name>
-            <url>https://distrourl.com/</url>
-        </repository>
-    </distributionManagement>         -->
 
 
     <!-- Bibliothèques du projet -->
@@ -205,21 +167,6 @@
                 System    : Path to the JAR should be provided manually using <systemPath>
             -->
         </dependency>
-        <!-- <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-media</artifactId>
-            <version>19-ea+5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>19-ea+5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
-            <version>19-ea+5</version>
-        </dependency> -->
     </dependencies>
 
 </project>
