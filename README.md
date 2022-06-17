@@ -1,5 +1,6 @@
 <h1>VSFY - Spotify Valais</h1>
-Le manuel d'utilisation et donnée du projet se trouve sous les [Annexes](Annexes/Manuel d'utilisation.docx)
+Toute la documentation est disponible sous le dossier [Annexes](Annexes)
+- [Le manuel d'utilisation](Annexes/Manuel d'utilisation.docx)
 
 <h2>Améliorations futures</h2>
 A cause de la durée du projet qui est limtié, nous n'avons pas pu implementér toutes les fonctionnalitées voulues.
