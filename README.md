@@ -4,10 +4,15 @@ Toute la documentation est disponible sous le dossier [Annexes](Annexes)
 
 <h2>Description</h2>
 Dans le cadre du cours programmation distribuée (JavaSocket) de la formation Bachelor of Science en informatique de gestion de la HES-SO Valais Wallis, 4 ème semestre, nous avons dû réaliser une application Spotify fonctionnant en Peer to Peer.
+
 Le but est d’avoir un serveur central (Scanner) sur un réseau privé, auquel tous les utilisateurs (Users) peuvent accéder via son ip & port connus.
+
 Une fois qu'un utilisateur se connecte au scanner, les informations de l’utilisateur y sont envoyées.
+
 Les autres utilisateurs se connectant au scanner peuvent demander la liste des utilisateurs connectés eux aussi au scanner et ainsi obtenir leurs informations tel que ip, port, musiques à dispositions.
+
 Ainsi, je peux me connecter à n’importe quel autre utilisateur et streamer chez moi les musiques qu’il me met à disposition, et n’importe qui peut se connecter à mon PC pour écouter les musiques que je mets à disposition.
+
 Durant le cours, nous avons appris à utiliser les sockets sur java, et le but de ce projet est donc d’exploiter un maximum la communication entre des machines différentes via des sockets.
 De plus, du multithreading a du être implémenté afin de subvenir à nos besoins pour pouvoir faire toutes les tâches nécessaires en parallèle.
 
