@@ -148,7 +148,7 @@
                 <version>2.22.2</version>
             </plugin>-->
 
-            <!-- AUCUNE IDEE CE QUE C'EST @TODO-->
+            <!-- AUCUNE IDEE CE QUE C'EST -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
