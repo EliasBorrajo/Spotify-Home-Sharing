@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>ch.hevs.User.Musique</OriginalElement>
+  <nodes>
+    <node x="-237.1360201511335" y="82.00000000000006">ch.hevs.User.Client</node>
+    <node x="911.7493702770776" y="488.32493702770785">ch.hevs.User.ClientHandler</node>
+    <node x="589.1209068010072" y="532.3249370277078">ch.hevs.User.Musique</node>
+    <node x="561.1209068010072" y="82.00000000000006">ch.hevs.User.Server</node>
+    <node x="231.99244332493686" y="82.00000000000006">ch.hevs.User.AppUser</node>
+    <node x="213.49244332493686" y="412.33924433249376">ch.hevs.User.AudioPlayer</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="ch.hevs.User.AppUser" target="ch.hevs.User.Server" relationship="CREATE">
+      <point x="104.7604231738033" y="1.9186700251886464" />
+      <point x="500.9368866498737" y="177.9186700251887" />
+      <point x="500.9368866498737" y="178.1037638287151" />
+      <point x="-124.88382033249377" y="-19.896236171284954" />
+    </edge>
+    <edge source="ch.hevs.User.AppUser" target="ch.hevs.User.Musique" relationship="TO_MANY">
+      <point x="97.81940554156148" y="68.24394962216596" />
+      <point x="539.3065188916876" y="244.243949622166" />
+      <point x="539.3065188916876" y="547.5558085642315" />
+      <point x="-78.94585390428222" y="-78.76912846347636" />
+    </edge>
+    <edge source="ch.hevs.User.Client" target="ch.hevs.User.Musique" relationship="TO_MANY">
+      <point x="129.45414609571782" y="-34.17519395466013" />
+      <point x="503.0589823677582" y="361.8248060453399" />
+      <point x="503.0589823677582" y="626.325" />
+      <point x="-95.99990680100723" y="6.297229219853762E-5" />
+    </edge>
+    <edge source="ch.hevs.User.Client" target="ch.hevs.User.AudioPlayer" relationship="CREATE">
+      <point x="175.6322938841309" y="143.58188348614607" />
+      <point x="135.77027707808548" y="539.5818834861461" />
+      <point x="135.77027707808548" y="539.3392443324938" />
+      <point x="-122.5" y="0.0" />
+    </edge>
+    <edge source="ch.hevs.User.Client" target="ch.hevs.User.Musique" relationship="CREATE">
+      <point x="174.08796856423157" y="300.5691929471031" />
+      <point x="156.29993027707798" y="696.5691929471031" />
+      <point x="156.29993027707798" y="696.7851357178839" />
+      <point x="593.3372493702768" y="696.7851357178839" />
+      <point x="-91.78365743073039" y="74.40886649874028" />
+    </edge>
+    <edge source="ch.hevs.User.ClientHandler" target="ch.hevs.User.Musique" relationship="TO_MANY">
+      <point x="-237.01320365363924" y="24.299405541561782" />
+      <point x="826.2019143576825" y="628.6243425692696" />
+      <point x="826.2019143576825" y="629.2413219143575" />
+      <point x="96.50698075566777" y="2.9163848866496664" />
+    </edge>
+    <edge source="ch.hevs.User.Server" target="ch.hevs.User.Musique" relationship="TO_MANY">
+      <point x="-33.16302267002516" y="113.0562821158689" />
+      <point x="685.1209068010072" y="311.05628211586895" />
+      <point x="685.1209068010072" y="532.3976221662467" />
+      <point x="-10.797521410579293" y="-93.92731486146113" />
+    </edge>
+    <edge source="ch.hevs.User.AppUser" target="ch.hevs.User.Client" relationship="CREATE">
+      <point x="-104.0" y="0.0" />
+      <point x="174.0" y="-220.0" />
+    </edge>
+    <edge source="ch.hevs.User.Server" target="ch.hevs.User.ClientHandler" relationship="CREATE">
+      <point x="124.0" y="0.0" />
+      <point x="1149.643324937027" y="198.00000000000006" />
+      <point x="0.0" y="-116.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0373118729096997" showDependencies="true" x="881.5834760705284" y="444.65168765743044" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
