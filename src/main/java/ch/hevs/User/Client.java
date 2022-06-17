@@ -91,7 +91,7 @@ public class Client implements Runnable, Serializable
             }
             catch (Exception e)
             {
-                System.err.println("La connection a échoué. Veuillez vérifier les informations de connection et essayer à nouveau.");
+                System.err.println("The connection failed. Please check the connection information and try again.");
             }
 
             // ... tant que la connection n'a pas été établie
@@ -341,14 +341,14 @@ public class Client implements Runnable, Serializable
             do
             {
                 // 2) donner la musique à jouer au serveur
-                System.out.println("Selectionnez le titre de la musique à jouer : ");
-                System.out.println("Pour quitter vers le menu, tapez 'EXIT'");
+                System.out.println("Select the title of the music to be played: ");
+                System.out.println("To exit to the menu, press 'EXIT'");
                 Scanner scan = new Scanner(System.in);
                 String songToPlay = scan.nextLine();
 
                 if (songToPlay.equals("EXIT"))
                 {
-                    System.out.println("Vous allez vous déconnecter du serveur, retour au menu principal...");
+                    System.out.println("You will disconnect from the server, back to the main menu...");
                     isSongFound = false;
                     isPlaying = false;
                     p2pSocket.close();
@@ -364,12 +364,12 @@ public class Client implements Runnable, Serializable
                 String serverMusicSearchResponse = p2pDis.readUTF();
                 if (serverMusicSearchResponse.equals("SongFound"))
                 {
-                    System.out.println("Musique trouvée, lancement du thread de lecture...");
+                    System.out.println("Found music, launched the music player thread...");
                     isSongFound = true;
                 }
                 else // 5) Sinon, afficher un message d'erreur
                 {
-                    System.out.println("La musique n'est pas disponible, veuillez en choisir une autre...");
+                    System.out.println("The music is not available, please choose another one...");
                     isSongFound = false;
                 }
 
@@ -391,7 +391,7 @@ public class Client implements Runnable, Serializable
 
             do
             {
-                System.out.println("Que voulez-vous faire ? (PLAY, PAUSE, STOP)");
+                System.out.println("What do you want to do (PLAY, PAUSE, STOP)");
                 Scanner scan = new Scanner(System.in);
                 String command = scan.nextLine();
 
@@ -462,12 +462,12 @@ public class Client implements Runnable, Serializable
     private boolean connectToServer()
     {
         boolean isConnected = false;
-        System.out.println("Connexion au serveur d'un autre user, entrez ses informations : ");
-        System.out.println("Entrez l'adresse IP du Client  : ");
+        System.out.println("Connection to another user's server, enter his information : ");
+        System.out.println("Enter the Client's IP address:");
         Scanner scan = new Scanner(System.in);
         String serverIp = scan.nextLine();
 
-        System.out.println("Entrez le port du Client  : ");
+        System.out.println("Enter the Client port: ");
         int serverPort ;//= scan.nextInt();
         // Tant que la saisie dans la console client est différente d'un int
         while (!scan.hasNextInt()) // If not an int !
@@ -482,7 +482,7 @@ public class Client implements Runnable, Serializable
         try
         {
             p2pSocket = new Socket(serverIp, serverPort);
-            System.out.println("Connexion au serveur du User Réussie !");
+            System.out.println("Successful connection to the User server!");
             p2pDis = new DataInputStream(p2pSocket.getInputStream());
             p2pDos = new DataOutputStream(p2pSocket.getOutputStream());
 
@@ -491,11 +491,11 @@ public class Client implements Runnable, Serializable
         }
         catch (UnknownHostException e)
         {
-            System.err.println("Aucun serveur trouvé avec ces informations, retour au menu, veuillez réessayer");
+            System.err.println("No server found with this information, back to the menu, please try again");
         }
         catch (IOException e)
         {
-            System.err.println("Impossible de se connecter au serveur, veuillez réessayer");
+            System.err.println("Unable to connect to the server, please try again");
         }
 
 

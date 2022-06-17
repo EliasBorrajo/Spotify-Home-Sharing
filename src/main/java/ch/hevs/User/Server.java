@@ -134,7 +134,7 @@ public class Server implements Runnable
         }
         catch (Exception e)
         {
-            String msg = "SERVEUR - ListenAndAccept : Erreur lors de la connexion d'un nouveau client";
+            String msg = "SERVEUR - ListenAndAccept : Error when connecting a new client";
             log.myLogger.severe(msg + " : " + e.toString());
             System.err.println(msg);
             isRunning = false;
@@ -144,7 +144,7 @@ public class Server implements Runnable
                 socket.close();
             } catch (IOException ex)
             {
-                String msg2 = "Socket non fermé, impossible de le fermer car non existant";
+                String msg2 = "Socket not closed, impossible to close because not existing";
                 System.err.println(msg2);
                 log.myLogger.severe(msg2 + " : " + ex.toString());
                 //throw new RuntimeException(ex);

@@ -1,6 +1,5 @@
 package ch.hevs.Scanner;
 
-
 import ch.hevs.Logs.Log;
 import ch.hevs.Configurations.Config;
 import java.io.*;
@@ -52,7 +51,7 @@ public class AppScanner
             server = new ServerSocket(PORT_DU_SERVEUR);
         } catch (IOException e)
         {
-            String msg = "SCANNER : Impossible de créer un serveur sur le port " + PORT_DU_SERVEUR;
+            String msg = "SCANNER : Unable to create a server on the portt " + PORT_DU_SERVEUR;
             log.myLogger.severe(msg + " : " + e.toString());
             System.exit(1); // Arrêt du programme en cas d'erreur
             throw new RuntimeException(e);
@@ -146,7 +145,7 @@ public class AppScanner
         }
         catch (Exception e)
         {
-            String msg = "SCANNER - ListenAndAccept : Erreur lors de la connexion d'un nouveau client";
+            String msg = "SCANNER - ListenAndAccept : Error when connecting a new client";
             log.myLogger.severe(msg + " : " + e.toString());
             System.err.println(msg);
             // Si le socket existe, essaye de le fermer
@@ -156,7 +155,7 @@ public class AppScanner
             } catch (IOException ex)
             {
                 log.myLogger.severe("Impossible to close socket connection properly: " + ex.toString());
-                System.err.println("Socket non fermé, impossible de le fermer car non existant");
+                System.err.println("Impossible to close socket connection properly, because it doesn't exist.");
                 throw new RuntimeException(ex);
             }
 

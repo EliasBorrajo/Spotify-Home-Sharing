@@ -42,7 +42,7 @@ public class AppUser
         Thread clientThread = new Thread(client);
         Thread serverThread = new Thread(server);
 
-        log.myLogger.info("USER : Démarrage du client & serveur");
+        log.myLogger.info("USER : Client & server startup");
 
         System.out.println("USER APPLICATION STARTED");
         System.out.println("Starting server thread");

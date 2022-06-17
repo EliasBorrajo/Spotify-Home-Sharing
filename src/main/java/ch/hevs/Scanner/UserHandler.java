@@ -24,10 +24,8 @@ class UserHandler implements Runnable
     private Client client;
     private LinkedList<UserHandler> scannerUsersList;
 
-
-
     // C O N S T R U C T E U R
-    public UserHandler(Socket s, DataInputStream dis, DataOutputStream dos, LinkedList<UserHandler> connectedUsers) throws IOException
+    public UserHandler(Socket s, DataInputStream dis, DataOutputStream dos, LinkedList<UserHandler> connectedUsers)
     {
         this.socket = s;
         this.dis = dis;
@@ -131,7 +129,7 @@ class UserHandler implements Runnable
         }
         catch (IOException e)
         {
-            System.err.println("SCANNER - run 2 : On n'a pas pu fermer la connexion proprement!");
+            System.err.println("SCANNER - run 2 : We couldn't close the connection properly!");
             throw new RuntimeException(e);
         }
 
@@ -191,7 +189,7 @@ class UserHandler implements Runnable
         }
         catch (IOException e)
         {
-            String msg ="SCANNER - setClientInformations 1 : On n'a pas pu récupérer les données du client lors de la connexion !";
+            String msg ="SCANNER - setClientInformations 1 : The client data could not be retrieved during the connection!";
             log.myLogger.severe(msg + e.toString());
             throw new RuntimeException(e);
         }
@@ -242,7 +240,7 @@ class UserHandler implements Runnable
 
 
             // 4) Vérifier que le client a bien reçu la liste des clients connectés au scanner
-            System.out.println("SCANNER - En attente de la réponse du client...");
+            System.out.println("SCANNER - Waiting for the client's answer...");
             String confirmation = dis.readUTF();
 
             if (confirmation.equals("listReceived"))
@@ -257,7 +255,7 @@ class UserHandler implements Runnable
         }
         catch (IOException e)
         {
-            String msg = "SCANNER - sendUsersList 1 : On n'a pas pu envoyer la liste des 'clients connectés au scanner' au client !";
+            String msg = "SCANNER - sendUsersList 1 : We couldn't send the list of 'clients connected to the scanner' to the client!";
             log.myLogger.severe(msg + e.toString());
             throw new RuntimeException(e);
         }

@@ -56,7 +56,7 @@ class ClientHandler implements Runnable
         try
         {
             received = dis.readUTF();
-            log.myLogger.info("un client s'est connecté : " + socket.toString());
+            log.myLogger.info("A client has logged in : " + socket.toString());
 
             // 2) Handler en attente des requêtes du client
             while (isRunning)
@@ -138,7 +138,7 @@ class ClientHandler implements Runnable
         }
         catch (IOException e)
         {
-            System.err.println("SERVEUR - run 2 : On n'a pas pu fermer la connexion !");
+            System.err.println("SERVEUR - run 2 : We couldn't close the connection !");
             throw new RuntimeException(e);
         }
 
