@@ -22,7 +22,9 @@
     </edge>
   </edges>
   <settings layout="Hierarchic" zoom="1.2756309148264988" showDependencies="true" x="222.43223493044815" y="388.5473693972179" />
-  <SelectedNodes />
+  <SelectedNodes>
+    <node>ch.hevs.Scanner.UserHandler</node>
+  </SelectedNodes>
   <Categories>
     <Category>Constructors</Category>
     <Category>Fields</Category>

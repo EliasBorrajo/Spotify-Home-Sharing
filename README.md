@@ -11,7 +11,7 @@ Ainsi, je peux me connecter à n’importe quel autre utilisateur et streamer ch
 Durant le cours, nous avons appris à utiliser les sockets sur java, et le but de ce projet est donc d’exploiter un maximum la communication entre des machines différentes via des sockets.
 De plus, du multithreading a du être implémenté afin de subvenir à nos besoins pour pouvoir faire toutes les tâches nécessaires en parallèle.
 
-<h2>Fonctionnalités</h2>
+<h2>Configuration réquise</h2>
 - Variable d’environnement appelé « VSSPOTIFY » 
   - Peut indiquer le chemin d’accès au bureau par exemple.
   Indique le chemin d’accès au répertoire ou l’on veut créer nos dossiers contenants les fichiers que l’on met à disposition des autres utilisateurs & les fichiers de LOG qui permettront d’avoir un historique des activités.
