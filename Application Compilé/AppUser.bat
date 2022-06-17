@@ -1,0 +1,1 @@
+java -jar Spotify_USER__-jar-with-dependencies.jar
