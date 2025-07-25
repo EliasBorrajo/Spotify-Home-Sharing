@@ -1,3 +1,85 @@
+# Spotify Home Sharing 
+
+> **Spotify Home Sharing** is a Java-based project developed as part of a school assignment to practice TCP socket programming and basic peer-to-peer networking. Despite the name, this project has no connection to Spotify. It allows users to locally share and stream music files across a network.
+
+---
+
+## Concept
+
+Each instance of the program acts both as a **client and a server**. A central directory server keeps track of all connected peers and the music files they share. Users expose a local folder containing `.wav` files. Through a command-line interface, they can:
+
+* Discover available peers
+* List available songs shared by others
+* Stream music from remote peers using TCP
+
+---
+
+## Key Features
+
+* Peer discovery via a central server
+* P2P music streaming over TCP
+* Local folder sharing (with basic metadata scanning)
+* No graphical interface; command-line interaction only
+* `.wav` file support only
+* Simplified protocol for listing and requesting tracks
+
+---
+
+## 🖊️ Diagrams & Documentation
+
+### Architecture Overview
+
+The central server coordinates connections between peers. Music is streamed directly between clients after discovery.
+
+![Architecture Diagram](https://github.com/EliasBorrajo/Spotify-Home-Sharing/blob/master/01_Annexes/Architecture.png)
+
+
+### Client UML Diagram
+
+Illustrates the different responsibilities of the client module: networking, file handling, and interaction.
+
+![Client UML](https://github.com/EliasBorrajo/Spotify-Home-Sharing/blob/master/01_Annexes/UML/Client.jpg)
+
+
+### Scanner UML Diagram
+
+Details how the local music directory is scanned to detect `.wav` files and share metadata with peers.
+
+![Scanner UML](https://github.com/EliasBorrajo/Spotify-Home-Sharing/blob/master/01_Annexes/UML/Scanner.jpg)
+
+---
+
+## Technologies Used
+
+* Java 17
+* TCP Sockets
+* CLI-based interaction
+
+---
+
+## 🚫 Disclaimer
+
+This is a **pedagogical project only**. All music files are stored and shared **locally**, and no third-party API (such as Spotify) is used.
+
+---
+
+## 📄 Authors
+
+Project developed by:
+
+* Elias Borrajo
+* Arthur Avez
+
+---
+
+## Original Readme archive (FR)
+
+
+
+
+<details>
+  <summary>Click here to see the original version of the readme</summary>
+
 <h1>VSFY - Spotify Valais</h1>
 Toute la documentation est disponible sous le dossier [Annexes](Annexes)
 - [Le manuel d'utilisation](Annexes/Manuel d'utilisation.docx)
@@ -44,3 +126,6 @@ En procédant de la sorte, on a un code qui est bien structuré, et pour ajouter
 <h2>Crédits</h2>
 Projet réalisé par :
 [Arthur Avez](https://gitlab.com/ArthurAvez) & [Borrajo Elias](https://gitlab.com/EliasKelliwich).
+
+  
+</details>
