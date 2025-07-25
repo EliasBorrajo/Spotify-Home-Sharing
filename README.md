@@ -1,74 +1,6 @@
-# Spotify Home Sharing 
+# Spotify Home Sharing
 
-> **Spotify Home Sharing** is a Java-based project developed as part of a school assignment to practice TCP socket programming and basic peer-to-peer networking. Despite the name, this project has no connection to Spotify. It allows users to locally share and stream music files across a network.
-
----
-
-## Concept
-
-Each instance of the program acts both as a **client and a server**. A central directory server keeps track of all connected peers and the music files they share. Users expose a local folder containing `.wav` files. Through a command-line interface, they can:
-
-* Discover available peers
-* List available songs shared by others
-* Stream music from remote peers using TCP
-
----
-
-## Key Features
-
-* Peer discovery via a central server
-* P2P music streaming over TCP
-* Local folder sharing (with basic metadata scanning)
-* No graphical interface; command-line interaction only
-* `.wav` file support only
-* Simplified protocol for listing and requesting tracks
-* Thread-safe multi-client support: multiple clients can request music simultaneously
-* Server-side logging system:
-  * Info, Warning, Severe log levels
-  * One log file per day
-  * Logs all key actions and network activity
-
----
-
-## 🖊️ Diagrams & Documentation
-
-### Architecture Overview
-
-The central server coordinates connections between peers. Music is streamed directly between clients after discovery.
-
-![Architecture Diagram](https://github.com/EliasBorrajo/Spotify-Home-Sharing/blob/master/01_Annexes/Architecture.png)
-
-
-### Client UML Diagram
-
-Illustrates the different responsibilities of the client module: networking, file handling, and interaction.
-
-![Client UML](https://github.com/EliasBorrajo/Spotify-Home-Sharing/blob/master/01_Annexes/UML/Client.jpg)
-
-
-### Scanner UML Diagram
-
-Details how the local music directory is scanned to detect `.wav` files and share metadata with peers.
-
-![Scanner UML](https://github.com/EliasBorrajo/Spotify-Home-Sharing/blob/master/01_Annexes/UML/Scanner.jpg)
-
----
-
-## Technologies Used
-
-* Java 17
-* TCP Sockets
-* CLI-based interaction
-
----
-
-⚠️ Technical Limitations 
-
-* Only .wav files are supported (no .mp3, used library could not handle it at this moment in time)
-* No audio buffering or caching – streaming is live and over TCP
-* No GUI – only terminal-based interface
-* The system does not use any third-party APIs
-* Music files must be placed manually in the shared folder
+> A peer-to-peer music streaming Java application developed as a school project for distributed systems. Despite the name, it is not affiliated with Spotify.
 
 ---
 
@@ -77,30 +9,143 @@ Details how the local music directory is scanned to detect `.wav` files and shar
 This is a **pedagogical project only**. All music files are stored and shared **locally**, and no third-party API (such as Spotify) is used.
 
 ---
-## ✅ Summary of Project Evaluation Criteria
 
-| Criteria                                            | Status     | Details                                                                                                                                 |
-|-----------------------------------------------------|------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| Client-server connection via TCP sockets            | ✅ Passed   | `Socket` & `ServerSocket` implemented in both server and client applications                                                           |
-| Sharing of `.wav` music files                       | ✅ Passed   | Scanner detects `.wav` files in the local shared folder                                                                                 |
-| Command-line only interface                         | ✅ Passed   | No graphical interface; all operations are performed via CLI                                                                            |
-| P2P architecture + central server (Scanner)         | ✅ Passed   | The scanner maintains the list of peers and their files; actual music streams happen directly between clients                          |
-| Peer-to-peer music streaming                        | ✅ Passed   | Music is streamed over TCP and played locally                                                                                           |
-| Multi-client support / concurrency handling         | ✅ Passed   | Uses `Thread` and `synchronized`; multiple clients can connect and stream simultaneously                                               |
-| Server logging with 3 levels                        | ✅ Passed   | Logging with `INFO`, `WARNING`, and `SEVERE` levels; daily log files are saved                                                          |
-| Display of users and available tracks               | ✅ Passed   | The client can retrieve the list of peers and their shared music tracks                                                                 |
-| Code stability / no crashes                         | ✅ Passed   | System handles simultaneous connections and improper disconnects gracefully                                                             |
-| Compliance with project requirements                | ✅ Passed   | All minimum requirements defined by HES-SO are implemented correctly                                                                    |
-| Additional features (bonus)                         | ⚠️ Partial | Audio multi-client streaming supported. No video support or Raspberry Pi deployment implemented.                                       |
+## 📚 Project Description
+
+Spotify Home Sharing is a Java-based peer-to-peer music sharing platform built with TCP socket communication. It allows users on the same local network to expose a folder of `.wav` files and stream music directly between each other using a central server (scanner) for peer discovery.
 
 ---
 
-## 📄 Authors
+## 🧪 Technologies Used
 
-Project developed by:
+| Type         | Name                                      |   |
+| ------------ | ----------------------------------------- | - |
+| Language     | Java 12                                   |   |
+|              |                                           |   |
+| CLI / UI     | Terminal                                  |   |
+| Audio Format | ".WAV" only                               |   |
+| Architecture | TCP / Sockets. Using P2P + Central Server |   |
 
-* Elias Borrajo
-* Arthur Avez
+---
+
+## 🎯 Learning Objectives
+
+* Understand and implement client-server architecture using Java Sockets
+* Handle peer discovery and file metadata exchange
+* Build thread-safe, concurrent applications
+* Manage live audio streaming over TCP
+
+---
+
+## 🔧 Features
+
+* Local folder sharing of `.wav` files
+* Peer discovery through a central scanner
+* Real-time audio streaming via TCP between clients
+* Logging system with 3 log levels and daily rotation
+* Thread-safe multi-client handling
+* Command-line interface only (no GUI)
+
+### 🔧 Bonus Features
+
+* Concurrent streams: multiple clients can stream the same song from one peer
+* Dynamic file updates in shared folder
+* Fault tolerance for improper disconnects
+
+---
+
+## 🧠 Language Paradigm Principles
+
+* Concurrency using Java Threads
+* Synchronous TCP communication
+* Basic modular design
+
+### Error Handling
+
+Error handling is performed via `try-catch` blocks, with categorized log levels:
+
+* `INFO`: normal operation
+* `WARNING`: recoverable errors (e.g. disconnections)
+* `SEVERE`: unrecoverable errors or exceptions
+
+---
+
+## 🏗 Project Structure
+
+### Architecture
+
+* A central **Scanner** server maintains a list of peers and their music files
+* Each **Client** connects to the scanner to register and discover other users
+* Clients connect directly to stream music from each other (peer-to-peer)
+
+---
+
+## 📘 Documentation & Diagrams
+
+* **Architecture Diagram**\\
+
+* **Client UML**\\
+
+* **Scanner UML**\\
+
+* [User Manual (FR)](01_Annexes/Manuel%20d'utilisation.docx) *(TODO: add English version)*
+
+---
+
+## ✅ Tests & Validation
+
+* Manual testing of multi-client streaming
+
+* Validation via project grading criteria from HES-SO
+
+---
+
+---
+
+## 📌 Success Criteria Table
+
+| Criterion                                | Status | Notes                                  |
+| ---------------------------------------- | ------ | -------------------------------------- |
+| Client-server connection via TCP sockets | ✅ Done | ServerSocket/Socket working correctly  |
+| Peer-to-peer music streaming             | ✅ Done | Live audio transfer without storage    |
+| CLI-only interface                       | ✅ Done | Terminal interaction only              |
+| Concurrency (multi-client support)       | ✅ Done | Thread-safe design                     |
+| Logging with 3 levels                    | ✅ Done | Daily log rotation implemented         |
+| .wav file detection & playback           | ✅ Done | Uses basic audio libraries             |
+| Bonus: multi-client streaming per file   | ✅ Done | Tested with concurrent client playback |
+| Bonus: Fault-tolerant peer cleanup       | ✅ Done | Scanner removes ghost clients          |
+|                                          |        |                                        |
+|                                          |        |                                        |
+
+---
+
+## 🚀 Future Improvements
+
+* Add automatic client connection when selecting a song
+* Display currently playing track in terminal
+* Support for file download (e.g. Dropbox-like)
+* Stream other formats (e.g. `.mp3`) and video
+* Launch playback via external players (e.g. VLC)
+* Develop a graphical interface (GUI)
+* Deployment on Raspberry Pi or embedded devices
+
+---
+
+## 👤 Authors
+
+* **Elias Borrajo**
+* **Arthur Avez**
+
+---
+
+***Project realized for the course*** `633-2 - Distributed Architectures & Java Socket Programming`
+***Instructor: Antoine Widmer, HES-SO Valais-Wallis***
+*Context: Bachelor of Science in Business IT, 4th Semester*
+
+---
+
+*(Old README content available in ************************************************************[README\_FR](README_FR.md)************************************************************)*
+
 
 ---
 
