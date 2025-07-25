@@ -22,6 +22,11 @@ Each instance of the program acts both as a **client and a server**. A central d
 * No graphical interface; command-line interaction only
 * `.wav` file support only
 * Simplified protocol for listing and requesting tracks
+* Thread-safe multi-client support: multiple clients can request music simultaneously
+* Server-side logging system:
+  * Info, Warning, Severe log levels
+  * One log file per day
+  * Logs all key actions and network activity
 
 ---
 
@@ -57,9 +62,36 @@ Details how the local music directory is scanned to detect `.wav` files and shar
 
 ---
 
+⚠️ Technical Limitations 
+
+* Only .wav files are supported (no .mp3, used library could not handle it at this moment in time)
+* No audio buffering or caching – streaming is live and over TCP
+* No GUI – only terminal-based interface
+* The system does not use any third-party APIs
+* Music files must be placed manually in the shared folder
+
+---
+
 ## 🚫 Disclaimer
 
 This is a **pedagogical project only**. All music files are stored and shared **locally**, and no third-party API (such as Spotify) is used.
+
+---
+## ✅ Summary of Project Evaluation Criteria
+
+| Criteria                                            | Status     | Details                                                                                                                                 |
+|-----------------------------------------------------|------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| Client-server connection via TCP sockets            | ✅ Passed   | `Socket` & `ServerSocket` implemented in both server and client applications                                                           |
+| Sharing of `.wav` music files                       | ✅ Passed   | Scanner detects `.wav` files in the local shared folder                                                                                 |
+| Command-line only interface                         | ✅ Passed   | No graphical interface; all operations are performed via CLI                                                                            |
+| P2P architecture + central server (Scanner)         | ✅ Passed   | The scanner maintains the list of peers and their files; actual music streams happen directly between clients                          |
+| Peer-to-peer music streaming                        | ✅ Passed   | Music is streamed over TCP and played locally                                                                                           |
+| Multi-client support / concurrency handling         | ✅ Passed   | Uses `Thread` and `synchronized`; multiple clients can connect and stream simultaneously                                               |
+| Server logging with 3 levels                        | ✅ Passed   | Logging with `INFO`, `WARNING`, and `SEVERE` levels; daily log files are saved                                                          |
+| Display of users and available tracks               | ✅ Passed   | The client can retrieve the list of peers and their shared music tracks                                                                 |
+| Code stability / no crashes                         | ✅ Passed   | System handles simultaneous connections and improper disconnects gracefully                                                             |
+| Compliance with project requirements                | ✅ Passed   | All minimum requirements defined by HES-SO are implemented correctly                                                                    |
+| Additional features (bonus)                         | ⚠️ Partial | Audio multi-client streaming supported. No video support or Raspberry Pi deployment implemented.                                       |
 
 ---
 
@@ -72,13 +104,12 @@ Project developed by:
 
 ---
 
-## Original Readme archive (FR)
-
-
 
 
 <details>
-  <summary>Click here to see the original version of the readme</summary>
+  <summary>
+    <h2>Original Readme archive (FR)</h2>
+  </summary>
 
 <h1>VSFY - Spotify Valais</h1>
 Toute la documentation est disponible sous le dossier [Annexes](Annexes)
