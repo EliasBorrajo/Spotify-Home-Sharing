@@ -18,13 +18,13 @@ Spotify Home Sharing is a Java-based peer-to-peer music sharing platform built w
 
 ## 🧪 Technologies Used
 
-| Type         | Name                                      |   |
-| ------------ | ----------------------------------------- | - |
-| Language     | Java 17                                   |   |
-|              |                                           |   |
-| CLI / UI     | Terminal                                  |   |
-| Audio Format | ".WAV" only                               |   |
-| Architecture | TCP / Sockets. Using P2P + Central Server |   |
+| Type         | Name                                      |   
+| ------------ | ----------------------------------------- | 
+| Language     | Java 17                                   | 
+|              |                                           |   
+| CLI / UI     | Terminal                                  |  
+| Audio Format | ".WAV" only                               |  
+| Architecture | TCP / Sockets. Using P2P + Central Server |   
 
 ---
 
